@@ -1,0 +1,109 @@
+/* import de _variables.scss */
+@import "variables";
+
+/* declaration */
+$kitten: pink;
+
+.div {
+  color: $base-color;
+  bg-color: $kitten;
+}
+
+
+/* ------------------------------
+ Imbrication de règles */
+.row {
+
+  h2 {
+    color: $main-color;
+  }
+  .is-active {
+    background-color: #EEE;
+  }
+}
+
+/* .row h2 { color: pink; }
+   .row .is-active { background-color: #EEE; } */
+
+/* ------------------------------
+ Imbrication de règles avec & */
+a {
+  background: pink;
+  &:focus, &:active, &:hover {
+    text-decoration: overline;
+  }
+}a {
+  background: pink;
+  &:focus, &:active, &:hover {
+    text-decoration: overline;
+  }
+}
+/*
+*/
+/* ------------------------------
+*/
+.kitten {
+  .is-cute { … }
+}
+.kitten {
+  & .is-cute { … }
+}
+.kitten {
+  &.is-cute { … }
+}
+.kitten {
+  .is-cute & { … }
+}
+Sera compilé en :
+
+.kitten .is-cute { … }
+
+.kitten .is-cute { … }
+
+.kitten.is-cute { … }
+
+.is-cute .kitten { … }
+
+
+
+.border {
+  border: 2px solid pink;
+}
+.link {
+  @extend .border;
+}
+.article a {
+  @extend .border;
+}
+.title a {
+  @extend .border;
+}
+
+
+
+$name: foo;
+$attr: border;
+p.#{$name} {
+  #{$attr}-color: blue;
+}
+
+
+@for $i from 1 through 3 {
+  .spacer-#{$i} {
+    margin: $i * 1rem;
+  }
+}
+
+
+@mixin img($url, $rotation) {
+  background: url(#{$url}.png);
+  @if $rotation == 0 {
+  }  
+  @else {
+    transform: rotate($rotation);
+  }
+}
+
+p {
+  @include img("kiwi", 10deg);
+}
