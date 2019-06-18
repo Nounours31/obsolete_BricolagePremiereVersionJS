@@ -1,100 +1,86 @@
-/* import de _variables.scss */
-@import "variables";
+/* https://sass-lang.com/documentation/at-rules/debug 
+npm install -g sass
+sass source/stylesheets/index.scss build/stylesheets/index.css
+*/
 
-/* declaration */
+
+/* ======================================
+** Import du fichier _variables.scss
+========================================= */
+@import "demo_variables";
+
+/* ======================================
+** declaration 
+========================================= */
 $kitten: pink;
 
 .div {
   color: $base-color;
-  bg-color: $kitten;
+  background-color: $kitten;
 }
 
 
-/* ------------------------------
- Imbrication de règles */
+/* ======================================
+** Imbrication de règles 
+========================================= */
 .row {
-
-  h2 {
-    color: $main-color;
-  }
-  .is-active {
-    background-color: #EEE;
-  }
+  h2 { color: $base-color; }
+  .is-active { background-color: #EEE; }
 }
+/* 
+.row h2 { color: pink; }
+.row .is-active { background-color: #EEE; } 
+*/
 
-/* .row h2 { color: pink; }
-   .row .is-active { background-color: #EEE; } */
 
-/* ------------------------------
- Imbrication de règles avec & */
+/* ======================================
+** Imbrication de règles avec & 
+========================================= */
+.kitten {  .is-cute { color: red }}
+.kitten {  & .is-cute { color: red }}
+.kitten {  &.is-cute { color: red }}
+.kitten {  .is-cute & { color: red }}
+
+/*
+.kitten .is-cute { … }
+.kitten .is-cute { … }
+.kitten.is-cute { … }
+.is-cute .kitten { … }
+*/
+
+a { background: pink;
+    &:focus, &:active, &:hover { text-decoration: overline;}}
+/*
 a {
   background: pink;
-  &:focus, &:active, &:hover {
-    text-decoration: overline;
-  }
-}a {
-  background: pink;
-  &:focus, &:active, &:hover {
-    text-decoration: overline;
-  }
 }
-/*
+a:focus, a:active, a:hover {
+  text-decoration: overline;
+}
 */
-/* ------------------------------
-*/
-.kitten {
-  .is-cute { … }
-}
-.kitten {
-  & .is-cute { … }
-}
-.kitten {
-  &.is-cute { … }
-}
-.kitten {
-  .is-cute & { … }
-}
-Sera compilé en :
-
-.kitten .is-cute { … }
-
-.kitten .is-cute { … }
-
-.kitten.is-cute { … }
-
-.is-cute .kitten { … }
 
 
-
+/* ======================================
+** derivation 
+========================================= */
 .border {
   border: 2px solid pink;
 }
 .link {
   @extend .border;
 }
-.article a {
-  @extend .border;
+
+%sansdecalaration {
+  border: 2px solid pink;
 }
-.title a {
-  @extend .border;
-}
-
-
-
-$name: foo;
-$attr: border;
-p.#{$name} {
-  #{$attr}-color: blue;
+.link {
+  @extend %sansdecalaration;
 }
 
 
-@for $i from 1 through 3 {
-  .spacer-#{$i} {
-    margin: $i * 1rem;
-  }
-}
-
-
+/* ======================================
+** fonction + if + for
+========================================= */
 @mixin img($url, $rotation) {
   background: url(#{$url}.png);
   @if $rotation == 0 {
@@ -107,3 +93,47 @@ p.#{$name} {
 p {
   @include img("kiwi", 10deg);
 }
+
+$known-prefixes: webkit, moz, ms, o;
+
+@mixin prefix($property, $value, $prefixes) {
+  @each $prefix in $prefixes {
+    @if not index($known-prefixes, $prefix) {
+      @warn "Unknown prefix #{$prefix}.";
+    }
+    -#{$prefix}-#{$property}: $value;
+  }
+  #{$property}: $value;
+}
+
+@for $i from 1 through 3 {
+  .spacer-#{$i} {
+    margin: $i * 1rem;
+  }
+}
+
+
+/* ======================================
+** log et debug 
+========================================= */
+@debug "Je suis ici";
+@warn "Je suis ici";
+
+$font-weights: ("regular": 400, "medium": 500, "bold": 700);
+@debug map-get($font-weights, "medium"); // 500
+@if map-get($font-weights, "medium") != 500 and map-get($font-weights, "bold") != 600 {
+  @error "Je suis ici";
+}
+
+/* ======================================
+** nomage complexe 
+========================================= */
+$name: foo;
+$attr: border;
+p.#{$name} {
+  #{$attr}-color: blue;
+}
+
+
+
+
