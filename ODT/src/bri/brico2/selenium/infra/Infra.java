@@ -15,6 +15,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 public class Infra {
 	protected WebDriver driver;
@@ -36,8 +37,11 @@ public class Infra {
         else {
         	System.setProperty("webdriver.chrome.driver", "./thdpty/chromedriver_linux64/chromedriver");
         }
-		  
-		driver = new ChromeDriver();
+		
+        ChromeOptions opt = new ChromeOptions();
+        opt.setHeadless(true);
+        
+		driver = new ChromeDriver(opt);
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 		
 		js = (JavascriptExecutor) driver;
