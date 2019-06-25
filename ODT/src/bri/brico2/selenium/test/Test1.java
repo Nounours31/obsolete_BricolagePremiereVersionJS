@@ -22,6 +22,8 @@ import bri.brico2.selenium.infra.Infra;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.Keys;
+
+import java.io.IOException;
 import java.util.*;
 
 
@@ -29,7 +31,12 @@ public class Test1 extends Infra {
   
 
   
-  @Test
+  public Test1() throws IOException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+@Test
   public void test1() {
     // Test name: test1
     // Step # | name | target | value | comment
