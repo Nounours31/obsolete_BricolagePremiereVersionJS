@@ -1,9 +1,18 @@
+@import "BRIEnvCSSVar";
+
 body {
-  font-family: Roboto, Georgia, serif;
+  @if variable-exists("BRIFONT") {
+    font-family: $BRIFONT;
+  }
 }
 
 div {
-  border: solid red 1px;
+  @if variable-exists("DEBUG") and $DEBUG == true {
+    border: solid red 1px;
+  }
+  @else {
+    border: none;
+  }
 }
 
 .BRIIndex_Header {

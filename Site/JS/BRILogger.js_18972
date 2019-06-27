@@ -1,0 +1,119 @@
+"use strict";
+var _createClass = function () {
+  function a(a, b) {
+    for (var c, d = 0; d < b.length; d++) {
+      c = b[d], c.enumerable = c.enumerable || !1, c.configurable = !0, "value" in c && (c.writable = !0), Object.defineProperty(a, c.key, c);
+    }
+  }return function (b, c, d) {
+    return c && a(b.prototype, c), d && a(b, d), b;
+  };
+}();function _classCallCheck(a, b) {
+  if (!(a instanceof b)) throw new TypeError("Cannot call a class as a function");
+}var BRILogger = function () {
+  var b = Math.round,
+      c = Math.cos,
+      d = Math.PI;function a() {
+    // ms
+    // avoid redundant call
+    if (_classCallCheck(this, a), this.containerDiv = null, this.tabDiv = null, this.logDiv = null, this.visible = !0, this.opened = !1, this.enabled = !0, this.logHeight = 215, this.tabHeight = 20, this.animTime = 0, this.animDuration = 200, this.animFrameTime = 16, this.containerDiv) return !0; // check if DOM is ready
+    if (!document || !document.createElement || !document.body || !document.body.appendChild) return !1; // constants
+    if (this.CONTAINER_DIV = "loggerContainer", this.TAB_DIV = "loggerTab", this.LOG_DIV = "logger", this.Z_INDEX = 9999, containerDiv = document.getElementById(CONTAINER_DIV), !containerDiv) {
+      containerDiv = document.createElement("div"), containerDiv.id = CONTAINER_DIV, containerDiv.setAttribute("style", "width:100%; margin:0; padding:0; text-align:left; box-sizing:border-box; position:fixed; left:0; z-index:" + Z_INDEX + "; bottom:" + -logHeight + "px; "), tabDiv = document.createElement("div"), tabDiv.id = TAB_DIV, tabDiv.appendChild(document.createTextNode("LOG")), tabDiv.setAttribute("style", "width:40px; box-sizing:border-box; overflow:hidden; font:bold 10px verdana,helvetica,sans-serif; line-height:" + (tabHeight - 1) + "px; color:#fff; position:absolute; left:20px; top:" + -tabHeight + "px; margin:0; padding:0; text-align:center; border:1px solid #aaa; border-bottom:none; background:rgba(0,0,0,0.8); border-top-right-radius:8px; border-top-left-radius:8px; "), tabDiv.onmouseover = function () {
+        this.style.cursor = "pointer", this.style.textShadow = "0 0 1px #fff, 0 0 2px #0f0, 0 0 6px #0f0";
+      }, tabDiv.onmouseout = function () {
+        this.style.cursor = "auto", this.style.textShadow = "none";
+      }, tabDiv.onclick = function () {
+        Logger.toggle(), this.style.textShadow = "none";
+      }, logDiv = document.createElement("div"), logDiv.id = LOG_DIV, logDiv.setAttribute("style", "font:12px monospace; height: " + logHeight + "px; box-sizing:border-box; color:#fff; overflow-x:hidden; overflow-y:scroll; visibility:hidden; position:relative; bottom:0px; margin:0px; padding:5px; background:rgba(0, 0, 0, 0.8); border-top:1px solid #aaa; "); // style for log message
+      var b = document.createElement("span"); // for coloring text
+      b.style.color = "#afa", b.style.fontWeight = "bold"; // the first message in log
+      var c = "===== Log Started at " + getDate() + ", " + getTime() + ", (Logger version " + version + ") =====";b.appendChild(document.createTextNode(c)), logDiv.appendChild(b), logDiv.appendChild(document.createElement("br")), logDiv.appendChild(document.createElement("br")), containerDiv.appendChild(tabDiv), containerDiv.appendChild(logDiv), document.body.appendChild(containerDiv);
+    }return !0;
+  }return _createClass(a, [{ key: "log", value: function b(a) {
+      0 == arguments.length ? Logger.print("") : // print a blank line
+      Logger.print(a);
+    } ///////////////////////////////////////////////////////////////////////////
+    // get time and date as string with a trailing space
+  }, { key: "getTime", value: function e() {
+      var a = new Date(),
+          b = "0" + a.getHours();b = b.substring(b.length - 2);var c = "0" + a.getMinutes();c = c.substring(c.length - 2);var d = "0" + a.getSeconds();return d = d.substring(d.length - 2), b + ":" + c + ":" + d;
+    } }, { key: "getDate", value: function e() {
+      var a = new Date(),
+          b = "" + a.getFullYear(),
+          c = "0" + (a.getMonth() + 1);c = c.substring(c.length - 2);var d = "0" + a.getDate();return d = d.substring(d.length - 2), b + "-" + c + "-" + d;
+    } ///////////////////////////////////////////////////////////////////////////
+    // return available requestAnimationFrame(), otherwise, fallback to setTimeOut
+  }, { key: "getRequestAnimationFrameFunction", value: function b() {
+      var a = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame || window.webkitRequestAnimationFrame;return a ? function (b) {
+        return a(b);
+      } : function (a) {
+        return setTimeout(a, 16);
+      };
+    } ///////////////////////////////////////////////////////////////////////////
+    // public members
+    ///////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////
+    // print log message to logDiv
+  }, { key: "print", value: function j(a) {
+      // ignore message if it is disabled
+      if (enabled) {
+        // check if this object is initialized
+        if (!containerDiv) {
+          var k = this.init();if (!k) return;
+        }var b = !0; // convert non-string type to string
+        "undefined" == typeof a ? (a = "undefined", b = !1) : "function" == typeof a ? (a = "function", b = !1) : null === a ? (a = "null", b = !1) : a instanceof Array ? a = this.arrayToString(a) : a instanceof Object ? (a = "object", b = !1) : a += "";for (var d, e = a.split(/\r\n|\r|\n/), f = 0, g = e.length; void 0 > f; ++f) {
+          d = document.createElement("div"), d.setAttribute("style", "color:#999;float:left;");var l = document.createTextNode(getTime() + "\xA0");d.appendChild(l); // create message span
+          var m = document.createElement("div");m.setAttribute("style", "word-wrap:break-word;margin-left:6.0em;"), b || (m.style.color = "#afa"); // override color if msg is not defined
+          // put message into a text node
+          var c = e[f].replace(/ /g, "\xA0"),
+              h = document.createTextNode(c);m.appendChild(h); // new line div with clearing css float property
+          var n = document.createElement("div");n.setAttribute("style", "clear:both;"), logDiv.appendChild(d), logDiv.appendChild(m), logDiv.appendChild(n), logDiv.scrollTop = logDiv.scrollHeight;
+        }
+      }
+    } ///////////////////////////////////////////////////////////////////////
+    // slide log container up and down
+  }, { key: "toggle", value: function a() {
+      opened ? // if opened, close the window
+      this.close() : // if closed, open the window
+      this.open();
+    } }, { key: "open", value: function f() {
+      function a() {
+        var f = Date.now() - animTime;if (f >= animDuration) return containerDiv.style.bottom = 0, void (opened = !0);var g = b(-logHeight * (1 - .5 * (1 - c(d * f / animDuration))));containerDiv.style.bottom = "" + g + "px", e(a);
+      }if (this.init() && visible && !opened) {
+        logDiv.style.visibility = "visible", animTime = Date.now();var e = getRequestAnimationFrameFunction();e(a);
+      }
+    } }, { key: "close", value: function f() {
+      function a() {
+        var f = Date.now() - animTime;if (f >= animDuration) return containerDiv.style.bottom = "" + -logHeight + "px", logDiv.style.visibility = "hidden", void (opened = !1);var g = b(.5 * -logHeight * (1 - c(d * f / animDuration)));containerDiv.style.bottom = "" + g + "px", e(a);
+      }if (this.init() && visible && opened) {
+        animTime = Date.now();var e = getRequestAnimationFrameFunction();e(a);
+      }
+    } ///////////////////////////////////////////////////////////////////////
+    // show/hide the logger window and tab
+  }, { key: "show", value: function a() {
+      this.init() && (containerDiv.style.display = "block", visible = !0);
+    } }, { key: "hide", value: function a() {
+      this.init() && (containerDiv.style.display = "none", visible = !1);
+    } ///////////////////////////////////////////////////////////////////////
+    // when Logger is enabled (default), log() method will write its message
+    // to the console ("logDiv")
+  }, { key: "enable", value: function a() {
+      this.init() && (enabled = !0, tabDiv.style.color = "#fff", logDiv.style.color = "#fff");
+    } ///////////////////////////////////////////////////////////////////////
+    // when it is diabled, subsequent log() calls will be ignored and
+    // the message won't be written on "logDiv".
+    // "LOG" tab and log text are grayed out to indicate it is disabled.
+  }, { key: "disable", value: function a() {
+      this.init() && (enabled = !1, tabDiv.style.color = "#444", logDiv.style.color = "#444");
+    } ///////////////////////////////////////////////////////////////////////
+    // clear all messages from logDiv
+  }, { key: "clear", value: function a() {
+      this.init() && (logDiv.innerHTML = "");
+    } ///////////////////////////////////////////////////////////////////////
+    // utility funtions
+  }, { key: "arrayToString", value: function c(a) {
+      for (var b = "[", d = 0, e = a.length; d < e; ++d) {
+        b += a[d] instanceof Array ? this.arrayToString(a[d]) : a[d], d < e - 1 && (b += ", ");
+      }return b += "]", b;
+    } }]), a;
+}();
