@@ -9,6 +9,7 @@ bin-release/
 .settings/
 .classpath/
 .project/
+node_modules/
 
 # Executables
 *.swf
