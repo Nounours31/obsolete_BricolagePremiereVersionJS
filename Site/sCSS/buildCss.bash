@@ -1,4 +1,4 @@
-#!bash
+#!/bin/bash
 
 for i in $(ls *.scss); do
   echo $i
