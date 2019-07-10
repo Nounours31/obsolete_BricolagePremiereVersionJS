@@ -8,5 +8,10 @@ class BRIBuildInfo {
   }
 
   getBuildInfo () {
+    return {
+      "date": this._dateBuild,
+      "version": this._versionBuild,
+      "commit": this._commitGIT
+    }
   }
 }

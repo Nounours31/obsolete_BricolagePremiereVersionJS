@@ -40,4 +40,9 @@
     Debug
   </div>
 </body>
+<script>
+  let commande = new BRIBuildInfo();
+  let infos = commande.getBuildInfo();
+  $("div.header").text("Build du ${infos.date} - version ${infos.version} - commit ${infos.commit} ");
+</script>
 </html>
