@@ -21,6 +21,9 @@
   <link rel="stylesheet" href="../CSS/BRILoggin.css" />
   <link rel="icon" type="image/png" href="./Images/BRILogo.png" />
   <title>Authentification sur le site du bricolage du CE DS</title>
+  
+
+  <script type="text/javascript" src="../../ThirdPty/jquery/jquery-3.4.1.min.js"></script>
 </head>
 
 <body id="StartBody">
@@ -40,4 +43,11 @@
     Debug
   </div>
 </body>
+<script type="module">
+  import BRIBuildInfo from '../JS/BRIBuildInfo.js';
+
+  let commande = new BRIBuildInfo();
+  let infos = commande.getBuildInfo();
+  $("div.BRIIndex_Header").text(`Build du ${infos.date} - version ${infos.version} - commit ${infos.commit}`);
+</script>
 </html>
