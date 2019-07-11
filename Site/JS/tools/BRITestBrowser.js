@@ -70,6 +70,6 @@ function BRITestBrowser_TestBrowser() {
           body.innerHTML = msg;
      }
      else {
-          document.location = './html/site.html';
+          document.location = './html/authentification.html';
      }
 }

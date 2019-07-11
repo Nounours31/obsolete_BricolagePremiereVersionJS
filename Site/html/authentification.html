@@ -44,14 +44,8 @@
   </div>
 </body>
 <script type="module">
-  import BRIBuildInfo from '../JS/env/BRIBuildInfo.js';
-  import BRIConst from '../JS/env/BRIConst.js';
-  import BRIEnvt from '../JS/env/BRIEnvt.js';
-
-  if (BRIEnvt.maturite != BRIConst.PROD) {
-    let buildInfo = new BRIBuildInfo();
-    let infos = buildInfo.getBuildInfo();
-    $("div.BRIIndex_Header").text(`Build du ${infos.date} - version ${infos.version} - commit ${infos.commit}`);
-  }
+  import BRIAuthentification from '../JS/cmd_authentification/BRIAuthentification.js';
+  let aut = new BRIAuthentification($("div.BRIIndex_Contenu"));
+  aut.openMenu();
 </script>
 </html>

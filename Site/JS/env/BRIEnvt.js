@@ -9,7 +9,7 @@ export default class BRIEnvt {
     this.DNName = "titi";
   }
 
-  static get CodeLevel() { return BRIConst.DEV; }
+  static get maturite() { return BRIConst.DEV; }
 
   get DBName() { return this.DNName;}
   set DBName(nom) { this.DNName = nom; }
