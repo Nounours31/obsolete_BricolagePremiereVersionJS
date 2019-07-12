@@ -1,8 +1,9 @@
 'use strict';
 
-import BRIConst from '../env/BRIConst.js';
+import { BRIConst } from '../../env/BRIConst.js';
+import { BRICommandeMere } from '../BRICommandeMere.js';
 
-export default class BRIAuthentification {
+export class BRIAuthentification extends BRICommandeMere {
 
      constructor(jqueryDiv) {
           this._ancrageJQueryDiv = jqueryDiv;
