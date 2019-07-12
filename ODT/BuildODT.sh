@@ -11,14 +11,16 @@ if [ -d ${BUILD_PLACE} ]; then
 fi
 mkdir ${BUILD_PLACE}
 
-set -x
 for i in infra main test; do
   echo "ODT Build of $i"
   [ -d ${BUILD_PLACE}/$i ] && rm -rf ${BUILD_PLACE}/$i
   mkdir ${BUILD_PLACE}/$i
   javac -d ${BUILD_PLACE}/$i -cp .:${MYCLASSPATH}:thdpty/JUnit-4.13/*:thdpty/selenium-java-3.141.59/libs/*:thdpty/selenium-java-3.141.59/* src/bri/brico2/selenium/$i/*.java
   cd ${BUILD_PLACE}/$i
-  jar cvf $i.jar *
+  
+  echo "build du har: jar cf $i.jar "
+  jar cf $i.jar *
+  
   cd ..
   mv $i/$i.jar .
   rm -rf $i
