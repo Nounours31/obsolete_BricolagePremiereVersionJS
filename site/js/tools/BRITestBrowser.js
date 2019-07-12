@@ -1,3 +1,5 @@
+"use strict";
+
 function isES6Compatible(iInfo) {
      var retour = false;
      var nom = iInfo.browser.toLowerCase();

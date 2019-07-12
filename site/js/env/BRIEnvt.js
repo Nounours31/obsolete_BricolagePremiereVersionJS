@@ -1,11 +1,10 @@
 'use strict';
 
-import BRIConst from './BRIConst.js';
+import { BRIConst }  from './BRIConst.js';
 
 export default class BRIEnvt {
 
   constructor() {
-    this._Level = BRIBuildInfo
     this.DNName = "titi";
   }
 
