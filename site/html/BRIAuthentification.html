@@ -1,6 +1,7 @@
 <html lang="fr">
 
 <head>
+  <title>Authentification sur le site du bricolage du CE DS</title>
   <meta charset="utf-8" />
   <!--
       La balise <meta> autorise d'autres valeurs utilisables dans vos projets :
@@ -18,34 +19,18 @@
           possibilité à l'utilisateur de zoomer (par exemple user-scalable="yes"). Attention, la valeur "no" interdit le zoom et peut rendre vos pages inaccessibles
     -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, shrink-to-fit=no" />
-  <link rel="stylesheet" href="../CSS/BRILoggin.css" />
-  <link rel="icon" type="image/png" href="../image/BRILogo.png" />
-  <title>Authentification sur le site du bricolage du CE DS</title>
-
-
   <script type="text/javascript" src="../../ThirdPty/jquery/jquery-3.4.1.min.js"></script>
+  <link rel="icon" type="image/png" href="../image/BRILogo.png" />
+  <link rel="stylesheet" href="../../thirdPty/UIKit/uikit-3.1.5/css/uikit.min.css" />
+  <script src="../../thirdPty/UIKit/uikit-3.1.5/js/uikit.min.js"></script>
+  <script src="../../thirdPty/UIKit/uikit-3.1.5/js/uikit-icons.min.js"></script>
 </head>
 
 <body id="StartBody">
-  <div class="BRIIndex_Header">
-    header
-  </div>
-  <div class="BRIIndex_Menu">
-    Menu
-  </div>
-  <div class="BRIIndex_Contenu">
-    Contenu
-  </div>
-  <div class="BRIIndex_Footer">
-    Footer
-  </div>
-  <div class="BRIIndex_Debug">
-    Debug
-  </div>
 </body>
 <script type="module">
-  import BRIAuthentification from '../js/commande/cmd_authentification/BRIAuthentification.js';
-  let aut = new BRIAuthentification($("div.BRIIndex_Contenu"));
-  aut.openMenu();
+  import { BRIAuthentification } from '../js/commande/cmd_authentification/BRIAuthentification.js';
+  let aut = new BRIAuthentification($( "#StartBody" ));
+  aut.showDialogue();
 </script>
 </html>

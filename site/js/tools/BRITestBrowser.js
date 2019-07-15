@@ -72,6 +72,6 @@ function BRITestBrowser_TestBrowser() {
           body.innerHTML = msg;
      }
      else {
-          document.location = './html/authentification.html';
+          document.location = './html/BRIAuthentification.html';
      }
 }

@@ -2,14 +2,16 @@
 
 import { BRIConst }  from './BRIConst.js';
 
-export default class BRIEnvt {
-
-  constructor() {
-    this.DNName = "titi";
-  }
-
+export class BRIEnvt {
+  /* Status du dev */
   static get maturite() { return BRIConst.DEV; }
+  
+  /* URI du site */
+  static get siteLocation() { 
+    let retour = window.location.protocol + "//" + window.location.host + "/Bricolage2"; 
+    return retour;
+  } 
 
-  get DBName() { return this.DNName;}
-  set DBName(nom) { this.DNName = nom; }
+  /* */ 
+
 }
