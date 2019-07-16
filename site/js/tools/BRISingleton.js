@@ -2,40 +2,39 @@
 
 const _ISFRAMEUP = 'isFrameUp';
 
-class BRISingleton {     
-     constructor() {
-          if (!BRISingleton.instance) {
-               this._data = [];
-               BRISingleton.instance = this;
-          }
-          return BRISingleton.instance;
-     }
-     add(item) {
-          this._data.push(item);
-     }
+class BRISingleton {
+    constructor() {
+        if (!BRISingleton.instance) {
+            this._data = [];
+            BRISingleton.instance = this;
+        }
+        return BRISingleton.instance;
+    }
 
-     get(id) {
-          return this._data.find(d => d.id === id);
-     }
+    add(item) {
+        this._data.push(item);
+    }
 
-     
-     set isFrameUP(bVal = false) {
-          let obj = {
-               'id': _ISFRAMEUP, 
-               'val': bVal 
-          }
-          this.add (obj)
-     }
+    get(id) {
+        return this._data.find(d => d.id === id);
+    }
 
-     get isFrameUP() {
-          let res = this.get(_ISFRAMEUP);
-          if (typeof res !== undefined)
-               return res.val;
-          return undefined;
-     }
+    set isFrameUP(bVal=false) {
+        let obj = {
+            'id': _ISFRAMEUP,
+            'val': bVal
+        }
+        this.add(obj)
+    }
+
+    get isFrameUP() {
+        let res = this.get(_ISFRAMEUP);
+        if (typeof res !== undefined)
+            return res.val;
+        return undefined;
+    }
 }
 
 const singleton = new BRISingleton();
 Object.freeze(singleton);
-
 export default singleton;

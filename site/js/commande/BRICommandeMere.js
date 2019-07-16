@@ -2,6 +2,7 @@
 
 import { BRIConst } from '../env/BRIConst.js';
 import { BRIEnvt } from '../env/BRIEnvt.js';
+import { BRINls } from '../tools/NLS/BRINls.js';
 import singleton from '../tools/BRISingleton.js';
 
 /* class abstraite a ne pas instancier */
@@ -80,7 +81,8 @@ export class BRICommandeMere {
             contentType: 'text/plain; charset=utf-8',
         });
         jAjax.done(function (data, textStatus, jqXHR) {
-            msg += data;
+            let displayMessage = BRINls.replaceAllTags(data);
+            msg += displayMessage;
         });
         jAjax.fail(function (jqXHR, textStatus, err) {
             alert(`No commande ->${htmlPath}<- to load -- err:${err} -- status: ${textStatus}`);
