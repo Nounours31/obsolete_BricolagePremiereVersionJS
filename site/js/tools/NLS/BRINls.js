@@ -2,11 +2,12 @@
 import {BRINlsAllMessages as eNLS} from './BRINlsAllMessages.js';
 import {BRILogger} from '../BRILogger.js';
 import {BRIEnvt} from '../../env/BRIEnvt.js';
+import {BRIConst} from '../../env/BRIConst.js';
 
 /* NLS management */
 export class BRINls {
     constructor() {
-        this._log = new BRILogger();
+        this._log = new BRILogger("BRINls");
     }
     
     static replaceAllTags (sMessage) {
@@ -52,7 +53,7 @@ export class BRINls {
 
     _private_getPT(tag, replace) {
         let s = eNLS[tag];
-        this._log.log_array ("eNLS:", eNLS);
+        this._log.all ("eNLS:", eNLS);
         if (s === undefined) {
             s = `*** BRINls TAG KO: recheche KO de [${tag}]`;
             return s;
@@ -63,7 +64,7 @@ export class BRINls {
             let fin = false;
             let iTaille = replace.length;
             if (iTaille > 9) {
-                let x = new cLog('BRINls');
+                let x = new BRILogger ('BRINls');
                 let msg = 'Impossible de gerer plus de 9 arg par TAG dans le NLS';
                 x.fatal(msg);
                 throw (msg);

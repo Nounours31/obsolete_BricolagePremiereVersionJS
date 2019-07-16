@@ -16,10 +16,11 @@ class BRISingleton {
     }
 
     get(id) {
+        var id = (typeof id !== 'undefined') ? id : 1;
         return this._data.find(d => d.id === id);
     }
 
-    set isFrameUP(bVal=false) {
+    set isFrameUP(bVal = false) {
         let obj = {
             'id': _ISFRAMEUP,
             'val': bVal

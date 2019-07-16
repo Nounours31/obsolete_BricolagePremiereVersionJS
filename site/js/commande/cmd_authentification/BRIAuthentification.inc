@@ -38,9 +38,9 @@
             <!-- Go -->
             <button class="uk-margin uk-button uk-button-primary">BRINls(SUBMIT_BUTTON)</button>
             <p id="nav" class="text-center">
-                <a href="#" onclick="BRIAuthentification_CreatePassword();">BRINls(LOGIN_CREATE)</a>
+                <a href="#" onclick="BRIAuthentification_createPassword();">BRINls(LOGIN_CREATE)</a>
                 |
-                <a href="#" onclick="BRIAuthentification_CreatePassword();">BRINls(LOGIN_LOST)</a>
+                <a href="#" onclick="BRIAuthentification_createPassword();">BRINls(LOGIN_LOST)</a>
             </p>
         </form>
         <!-- autofocus the field -->

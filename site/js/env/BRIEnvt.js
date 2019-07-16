@@ -19,6 +19,10 @@ export class BRIEnvt {
             return true;
         }
     }
+
+    static get debugLevel() {
+        return BRIConst.DEBUG;
+    }
     /* */
 
 }

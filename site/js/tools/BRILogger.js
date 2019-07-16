@@ -1,27 +1,52 @@
 "use strict";
 
+import {BRIConst} from '../env/BRIConst.js';
+import {BRIEnvt} from '../env/BRIEnvt.js';
+
 export class BRILogger {
-    constructor() {
+    constructor(iFrom) {
+        let from = (typeof iFrom !== 'undefined') ? iFrom : "-From-";
+
+        this._from = from;
         this._DivDebug = $('div.BRIIndex_Debug');
-        this._DivDebug.html('<textarea id="TextArea_BRIIndex_Debug" style="width:100%; padding: 10px; line-height: 1.5; border-radius: 5px; border: 1px solid #ccc; box-shadow: 1px 1px 1px #999;"> </textarea>')
+        let displayzone = $('#TextArea_BRIIndex_Debug');
+        if (! displayzone.length) {
+            this._DivDebug.html('<textarea id="TextArea_BRIIndex_Debug" style="width:100%; padding: 10px; line-height: 1.5; border-radius: 5px; border: 1px solid #ccc; box-shadow: 1px 1px 1px #999;"> </textarea>')
+        }
+    }
+    
+
+    fatal (msg) { return this._private_log (BRIConst.FATAL, msg); }
+    fatal_ (msg, obj) { return this._private_log_obj (BRIConst.FATAL, msg, obj); }
+
+    error (msg) { return this._private_log (BRIConst.ERROR, msg); }
+    error_ (msg, obj) { return this._private_log_obj (BRIConst.ERROR, msg, obj); }
+   
+    debug (msg) { return this._private_log (BRIConst.DEBUG, msg); }
+    debug_ (msg, obj) { return this._private_log_obj (BRIConst.DEBUG, msg, obj); }
+
+    all (msg) { return this._private_log (BRIConst.ALL, msg); }
+    all_ (msg, obj) { return this._private_log_obj (BRIConst.ALL, msg, obj); }
+
+    _private_log_obj(level, sMsg, obj) {
+       let msg = this._private_objectToString(obj);
+        this._private_log(level, sMsg + msg);
     }
 
-    log_array(sMsg, obj) {
-       let msg = this.objectToString(obj);
-        this.log(sMsg + msg);
+    
+    _private_log(level, msg) {
+        if (level >= BRIEnvt.debugLevel) {
+            let txt = $('#TextArea_BRIIndex_Debug');
+            let Jour = this._private_getDate();
+            let Heure = this._private_getTime();
+            let txtToDisplay = `[${Jour} ${Heure} - ${this._from}] ${msg}`;
+            console.log(txtToDisplay);
+            txtToDisplay = `${txtToDisplay} <br/>`;
+            txt.append(txtToDisplay);
+            }
     }
 
-    log(msg) {
-        let txt = $('TextArea_BRIIndex_Debug');
-        let Jour = this.getDate();
-        let Heure = this.getTime();
-        let txtToDisplay = `[${Jour} ${Heure}] ${msg}`;
-        console.log(txtToDisplay);
-        txtToDisplay = `${txtToDisplay} <br/>`;
-        txt.append(txtToDisplay);
-    }
-
-    getTime() {
+    _private_getTime() {
         let now = new Date();
         let hour = "0" + now.getHours();
         hour = hour.substring(hour.length - 2);
@@ -31,7 +56,8 @@ export class BRILogger {
         second = second.substring(second.length - 2);
         return hour + ":" + minute + ":" + second;
     }
-    getDate() {
+    
+    _private_getDate() {
         let now = new Date();
         let year = "" + now.getFullYear();
         let month = "0" + (now.getMonth() + 1);
@@ -41,14 +67,14 @@ export class BRILogger {
         return year + "/" + month + "/" + date;
     }
 
-    objectToString(obj) {
+    _private_objectToString(obj) {
         let str = "";
         if (Array.isArray(obj)) {
             str ='[';
             let nbItem = aArray.length;
             for (let i = 0; i < nbItem; i++) {
                 if (Array.isArray(aArray[i]))
-                    str += ("[" + this.arrayToString(aArray[i]) + "]");
+                    str += ("[" + this._private_objectToString(aArray[i]) + "]");
                 else
                     str += `[${i}]${aArray[i]}`;
 
@@ -70,10 +96,8 @@ export class BRILogger {
             });
            str +='}';            
         }
-
         return str;
     }
-
 }
 
 
