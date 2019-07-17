@@ -12,11 +12,12 @@
  *
  * @author PFS
  */
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-class cError {
+include_once './BRITraces.php';
+
+class BRIError {
     private static $_E_FAIL = 1;
     private static $_S_OK = 0;
-    
+                
     protected $_errcode = 0;
     protected $_msg = "";
     
@@ -27,7 +28,8 @@ class cError {
             $this-> _msg = "S_OK";
         if ($errcode == 1)
             $this-> _msg = "E_FAIL";
-    }
+
+}
     
     public function __destruct() {
     }
@@ -105,3 +107,4 @@ class cError {
         $logger ->debug("Err: ".$this -> getErrorCode()."   msg = ".$this -> getMessage());
     }
 }
+

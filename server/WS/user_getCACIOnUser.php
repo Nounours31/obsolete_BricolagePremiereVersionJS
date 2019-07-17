@@ -7,8 +7,7 @@ include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cSecur
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cUser.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBUserCACI.php';
 
-$secu = new cSecurite();
-$secu -> Check();
+
 
 
 $info = JSONTools::fromInputJSON();

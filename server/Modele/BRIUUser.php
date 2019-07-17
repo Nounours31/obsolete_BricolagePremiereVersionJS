@@ -17,7 +17,7 @@ include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBTableUs
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBTableRole.php';
 
 
-class cUser { // extends iModel {
+class BRIUser extends iBRIModel { 
     public function __construct() {
     }
     

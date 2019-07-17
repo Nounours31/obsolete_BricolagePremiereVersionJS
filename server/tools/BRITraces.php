@@ -15,7 +15,7 @@ include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/ENVT/ENVT.
 include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/API/Debug.php');
 include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/API/Tools.php');
 
-class Traces {
+class BRITraces {
     public $_FilePath = null;
     public $_Prefix = null;
 
