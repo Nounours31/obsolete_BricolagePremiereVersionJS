@@ -38,7 +38,8 @@ export class BRIAuthentification extends BRICommandeMere {
                     l.error ('Email invalide');
                 } 
                 else {
-                    BRIWS4User.initPasswd (email);
+                    let notYetAUser = new BRIWS4User( { 'email' : email, });
+                    notYetAUser.initPasswd ();
                     UIkit.modal.alert( BRINls.getP('LOGIN_CREATE_PWD_EMAIL_SEND', email));
                     l.all ('mail envoyed');
                 }

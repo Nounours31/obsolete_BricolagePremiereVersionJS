@@ -11,14 +11,28 @@ import { BRILogger } from '../tools/BRILogger.js';
 import { BRIWSBase } from './BRIWSBase.js';
 
 export class BRIWS4User extends BRIWSBase {
-    constructor() {
+    constructor(jsonObjInfo) {
         super();
         this._logger = new BRILogger('BRIWSUserCreatePasswd');
+        this._userInfo = jsonObjInfo;
     }
     
-    static initPasswd(email) {
+    
+    initPasswd() {
         let l = new BRILogger('BRIWSUserCreatePasswd');
         l.debug ("BRIWS4User::initPasswd");
+
+        let dataToSend = {'coucou': 'valeur', 'email': this._userInfo['email']};
+        let ajaxParam = {
+            data : dataToSend,
+            url : '../../server/WS/BRIUser.php', 
+            contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+            fct_success : null,
+            fct_error : null,
+            fct_requestfinished : null,
+        };
+        this.sendRequest (ajaxParam);
+    
     }
 }
 

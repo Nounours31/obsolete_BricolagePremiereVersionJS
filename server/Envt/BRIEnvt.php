@@ -14,7 +14,7 @@ include_once('BRIConst.php');
 
 class BRIEnvt {
     const isLOCALSERVER = true;
-    const _DEBUGLEVEL = BRIConst::_DEBUG;
+    const _DEBUGLEVEL = BRIConst::_ALL;
     
     public static function getPHPCodePath () {
         return self::getSitePath.'php/';
@@ -23,4 +23,9 @@ class BRIEnvt {
     public static function getSitePath () {
         return $_SERVER['DOCUMENT_ROOT'].'site/';
     }
+
+    public static function getDebugLevel () {
+        return self::_DEBUGLEVEL;
+    }
+    
 }

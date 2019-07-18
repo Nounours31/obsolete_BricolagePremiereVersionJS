@@ -11,17 +11,15 @@
  *
  * @author PFS
  */
-include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/ENVT/ENVT.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/API/Debug.php');
-include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/API/Tools.php');
+include_once('../BRIEnvt/BRIBRIEnvt.php');
 
-class BRITraces {
+class BRILogger {
     public $_FilePath = null;
     public $_Prefix = null;
 
     function __construct($prefix = 'inconnu') {
         $pathForLog = $_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/traces';
-        // $this->_FilePath = ENVT::DEBUGtraceFILE . ENVT::SiteName . ENVT::tracePATHTODISK;
+        // $this->_FilePath = BRIEnvt::DEBUGtraceFILE . BRIEnvt::SiteName . BRIEnvt::tracePATHTODISK;
         $this->_FilePath = $pathForLog;
         $this->_Prefix = $prefix;
         try {
@@ -33,7 +31,7 @@ class BRITraces {
             echo 'Exception reçue : ',  $e->getMessage(), "\n";
             echo 'mkdir KO of : '.$this->_FilePath;
         }
-        $this->_FilePath = $this->_FilePath .'/'.ENVT::traceFILE;
+        $this->_FilePath = $this->_FilePath .'/'.BRIEnvt::traceFILE;
     }
 
     public function prefix($prefix) {
@@ -42,13 +40,13 @@ class BRITraces {
     }
 
     public function DebugTraceTableau($Message, $Tab, $level) {
-        $s = Tools::arrayToString($Tab);
+        $s = BRITools::arrayToString($Tab);
         $this->DebugTrace($Message . "  " . $s, $level);
         return;
     }
 
     public function DebugTrace($Message, $level) {
-        $TraceLevel = Debug::getCurrentLevel();
+        $TraceLevel = BRIEnvt::getDebugLevel();
 
         if ($TraceLevel <= $level) {
             $pipo = date('d/m/Y-H:i:s');
@@ -74,19 +72,19 @@ class BRITraces {
     }
 
     public function log($Message) {
-        return $this->DebugTrace($Message, ENVT::_INFO);
+        return $this->DebugTrace($Message, BRIEnvt::_INFO);
     }
 
     public function debug($Message) {
-        return $this->DebugTrace($Message, ENVT::_DEBUG);
+        return $this->DebugTrace($Message, BRIEnvt::_DEBUG);
     }
 
     public function debugTab($Message, $anArray) {
-        return $this->DebugTraceTableau($Message, $anArray, ENVT::_DEBUG);
+        return $this->DebugTraceTableau($Message, $anArray, BRIEnvt::_DEBUG);
     }
 
     public function fatal($Message) {
-        return $this->DebugTrace($Message, ENVT::_FATAL);
+        return $this->DebugTrace($Message, BRIEnvt::_FATAL);
     }
 
 }

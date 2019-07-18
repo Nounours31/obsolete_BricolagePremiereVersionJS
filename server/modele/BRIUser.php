@@ -11,14 +11,13 @@
  *
  * @author PFS
  */
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cError.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBTableUser.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBTableRole.php';
+include_once './iBRIModel.php';
+// include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBTableRole.php';
 
 
 class BRIUser extends iBRIModel { 
     public function __construct() {
+        parent::__construct();
     }
     
     public function __destruct() {
@@ -26,10 +25,6 @@ class BRIUser extends iBRIModel {
     
     /**
      * Valide que le user identifier par nom - password exsite bien en base
-     * @param type $uid user
-     * @param type $user
-     * @param type $password
-     * @return true ou false
      */
     public function validateUserFromIdNomPassword ($uid, $user, $password) {
         $dbUser = new DBTableUser();
@@ -38,8 +33,6 @@ class BRIUser extends iBRIModel {
 
     /**
      * Valide que le user identifier par nom - password exsite bien en base
-     * @param type $id
-     * @param type $password
      * @return true ou false
      */
      public function validateUserFromIdAndPassword ($uid, $password) {
@@ -64,8 +57,6 @@ class BRIUser extends iBRIModel {
 
     /**
      * A la premiere connexion definit un token de session et un CSRF
-     * @param type $user
-     * @return type
      */
     public function setCurrentUserByName ($user) {
         $dbUser = new DBTableUser();
@@ -93,65 +84,8 @@ class BRIUser extends iBRIModel {
          return $dbUser -> updateCSRF ($userCookie);        
     }
     
-    // get all user info from cookie cnx
-    public function getInfoUserLoged ($userCookie) {
-         $dbUser = new DBTableUser();
-         return $dbUser -> getInfoUser ($userCookie);
-    }
+    
+    
+    
 
-    // get UID user from cookie cnx
-    public function getUserId ($userCookie) {
-         $info = $this -> getInfoUserLoged($userCookie);
-         return $info['uid'];
-    }
-    
-    
-    
-    public function getAllUsersPublicInfo () {
-         $dbUser = new DBTableUser();
-         return $dbUser -> getAllUsersPublicInfo ();
-    }
-    
-    public function existAUserWithThisEmail ($eMail) {
-         $dbUser = new DBTableUser();
-         return $dbUser -> existAUserWithThisEmail ($eMail);
-    }
-    
-    public function updatePassword ($user, $passwd) {
-         $dbUser = new DBTableUser(); 
-         return $dbUser -> updatePassword ($user, $passwd);
-    }
-    
-    public function resetCookies ($c1, $c2) {
-         $dbUser = new DBTableUser(); 
-         return $dbUser -> resetCookies ($c1, $c2);
-    }
-    
-    public function setCACI ($info) {
-        $dbCACI = new DBUserCACI();
-        return $dbCACI ->setCACI($info);
-    }
-    
-    
-    public function getEmail($userUid) {
-         $dbUser = new DBTableUser(); 
-         return $dbUser -> getEmail ($userUid);
-    }
-    
-    public function getAdministrators() {
-         $dbUser = new DBTableRole(); 
-         return $dbUser -> getAdministrators ();
-    }
-    public function getAdminUser() {
-         $dbUser = new DBTableRole(); 
-         return $dbUser ->getAdminUser ();
-    }
-    public function getAdminMateriel() {
-         $dbUser = new DBTableRole(); 
-         return $dbUser -> getAdminMateriel ();
-    }
-    public function getAdminSortie() {
-         $dbUser = new DBTableRole(); 
-         return $dbUser -> getAdminSortie ();
-    }
 }

@@ -12,18 +12,22 @@
  *
  * @author PFS
  */
-include_once './BRITraces.php';
+include_once './BRILogger.php';
 
 class BRIError {
+    private $_logger = null;
+    
     private static $_E_FAIL = 1;
     private static $_S_OK = 0;
                 
     protected $_errcode = 0;
     protected $_msg = "";
     
-    public function __construct($errcode) {
+    public function __construct($errcode, $msg = 'Err message non value') {
+        $_logger = new Traces();
+
         $this->_errcode = $errcode;
-        $this-> _msg = "message vide";
+        $this-> _msg = msg;
         if ($errcode == 0)
             $this-> _msg = "S_OK";
         if ($errcode == 1)
@@ -35,7 +39,7 @@ class BRIError {
     }
 
     public static function is_not_identical ($iErr1, $iErr2) {
-        return !cError::is_identical ($iErr1, $iErr2);
+        return !BRIError::is_identical ($iErr1, $iErr2);
     }
     
     public static function is_identical ($iErr1, $iErr2) {
@@ -61,28 +65,28 @@ class BRIError {
     }
 
     static function E_NOIMPL() {
-        $err = new cError(99);
+        $err = new BRIError(99);
         $err ->setMessage("Not impl");
         return $err;
     }
 
     static function E_FAIL() {
-        return new cError(cError::$_E_FAIL);
+        return new BRIError(BRIError::$_E_FAIL);
     }
     
     static function S_OK() {
-        return new cError(cError::$_S_OK);
+        return new BRIError(BRIError::$_S_OK);
     }
     
-    static function FAILED ($e) {
-        if ($e -> _errcode == cError::$_S_OK) {
+    function FAILED ($e) {
+        if ($e -> _errcode == BRIError::$_S_OK) {
             return false;
         }
         return true;
     }
 
-    static function SUCCEEDED ($e) {
-        $rc = cError::FAILED($e);
+    function SUCCEEDED ($e) {
+        $rc = BRIError::FAILED($e);
         $rc = ($rc ? false : true);
         return $rc;
     }
@@ -98,13 +102,18 @@ class BRIError {
     }
     
     public function toString () {
-        $retour = "{Err: ".$this -> getErrorCode().";   msg:".$this -> getMessage()."}";
-        return $retour;
+        $s = BRITools::arrayToString($this->toArray());
+        return $s;
     }
     
+    public function toJSON () {
+        $e = $this -> toArray();    
+        $r = json_encode ($e);
+        return  $r;
+    }
+
     public function Dump () {
-        $logger = new Traces();
-        $logger ->debug("Err: ".$this -> getErrorCode()."   msg = ".$this -> getMessage());
+        $_logger -> debug($this -> toString());
     }
 }
 

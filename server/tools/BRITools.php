@@ -11,7 +11,7 @@
  *
  * @author PFS
  */
-class Tools {
+class BRITools {
     public static function arrayToString($array) {
         $s = "";
         if (!is_array($array))

@@ -32,7 +32,7 @@ class BRISecurite {
     
     public function Check() {
         $iErr = $this -> isCookiesValid();
-        if (BRIError::is_not_identical($iErr, BRIError::S_OK())) {
+        if ($iErr -> FAILED()) {
             $trace = new Traces();
             $trace ->fatal("Impossible de se connecter : [err:".$iErr ->getErrorCode()."] = ".$iErr ->getMessage());
             
@@ -53,6 +53,7 @@ class BRISecurite {
             die();
             exit();
         }
+        return $iErr;
     }
     
     public function isCookiesValid() {
