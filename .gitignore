@@ -20,3 +20,5 @@ node_modules/
 # should NOT be excluded as they contain compiler settings and other important
 # information for Eclipse / Flash Builder.
 /nbproject/private/
+/site/nbproject/private/
+/server/nbproject/private/
