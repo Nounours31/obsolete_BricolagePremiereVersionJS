@@ -26,11 +26,10 @@ class BRISecurite {
     public function __destruct() {
     }
     
-
-
-    public function Check() {
-        return BRIError::
+    public function lightCheck() {
+        return BRIError::S_OK();
     }
+    
     public function Check() {
         $iErr = $this -> isCookiesValid();
         if (BRIError::is_not_identical($iErr, BRIError::S_OK())) {

@@ -14,7 +14,14 @@ include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cPassw
 // Recup du body de le requete
 //---------------------------------------------
 $secu = new BRISecurite();
-$secu -> 
+$rc = $secu ->lightCheck(); // le user n'est pas connecte il n'y a pas grand chose a faire
+if (BRIError::SUCCEEDED($rc)) {
+    $useApi = new BRIWSUser ();
+    $aINPUTS = $useApi -> decodeInput($_POST, );
+
+    
+}
+
 $id = $_POST['id'];
 $passwd = $_POST['password1'];
 $redirect = $_POST['redirectURL'];
