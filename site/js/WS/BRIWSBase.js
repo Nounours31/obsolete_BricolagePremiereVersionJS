@@ -103,8 +103,10 @@ export class BRIWSBase {
     fct_manageError(jqXHR) {  
         let l = new BRILogger ('BRIWSBase::fct_manageError');
         l.debug('Step in fct_manageError'); 
-        if (jqXHR.status != 0) {
+        if (!BRIEnv.bUse404AjaxRedirect) {
+            if (jqXHR.status != 0) {
               document.location = BRIEnvt.siteLocation + `/site/html/BRIServerError.php?status=${jqXHR.status}`;
+            }
         }
     }
     fct_requestfinished(jqXHR, textStatus) {  

@@ -14,6 +14,10 @@ export class BRIEnvt {
         return BRIConst.DEV;
     }
 
+    static get bUse404AjaxRedirect() {
+        return false; // uniquement en dev attention !
+    }
+
     static get bDebugNLS() {
         if (BRIEnvt.maturite == BRIConst.DEV) {
             return true;
