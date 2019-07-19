@@ -11,12 +11,9 @@
  *
  * @author PFS
  */
-include_once './tools/BRIError.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-// include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cModel.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cUser.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/JSONTools.php';
-include_once($_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/API/Tools.php');
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRIError.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRITools.php';
 
 
 class BRISecurite {
@@ -33,7 +30,7 @@ class BRISecurite {
     public function Check() {
         $iErr = $this -> isCookiesValid();
         if ($iErr -> FAILED()) {
-            $trace = new Traces();
+            $trace = new BRILogger();
             $trace ->fatal("Impossible de se connecter : [err:".$iErr ->getErrorCode()."] = ".$iErr ->getMessage());
             
             $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http");
@@ -56,36 +53,6 @@ class BRISecurite {
         return $iErr;
     }
     
-    public function isCookiesValid() {
-        // ai je les cookies de cnx ?
-        $status = FALSE;
-        if (isset ($_COOKIE) && is_array($_COOKIE)) {
-            $status = array_key_exists (BRIEnvt::COOKIE_LOGGING, $_COOKIE);
-            $status = $status && array_key_exists (BRIEnvt::COOKIE_CSRF, $_COOKIE);
-        }    
-        if (!$status) {
-            $err = new BRIError(101);
-            $msg = "DEBUG ---- Pas d'info de connexion manque un cookie - ";
-            $msg .= "Liste cookies: >>>".Tools::arrayToString($_COOKIE)."<<<";
-            $msg .= " ## Recherche de [".BRIEnvt::COOKIE_LOGGING."] et de [".BRIEnvt::COOKIE_CSRF."]";               
-            $err ->setMessage($msg);
-            return $err;
-        }
-        
-        $userCookie = $_COOKIE [BRIEnvt::COOKIE_LOGGING];
-        $csrfCookie = $_COOKIE [BRIEnvt::COOKIE_CSRF];
-        $user = new cUser();
-        $rc = $user -> isValidUser ($userCookie, $csrfCookie); 
-        if (BRIError::is_not_identical($rc, BRIError::S_OK())) {
-            return $rc;
-        }
-        
-        /*
-        $csrf = $user -> updateCSRFCookie($userCookie);
-        $this ->updateCSRFCookie($csrf[BRIEnvt::COOKIE_CSRF]);
-        */
-        return BRIError::S_OK();
-    }
     
     public function updateCookies($usercook, $csrfcook) {
         if (strlen($usercook) == 0) {
@@ -108,18 +75,5 @@ class BRISecurite {
     }
 
     public function clean () {
-        $trace = new Traces();
-        if (isset($_COOKIE)) {
-            $user = new cUser();
-            $userCookie = $_COOKIE [BRIEnvt::COOKIE_LOGGING];
-            $csrfCookie = $_COOKIE [BRIEnvt::COOKIE_CSRF];
-        
-            if (isset ($userCookie) && isset ($csrfCookie)) {
-                $user = new cUser();
-                $rc = $user -> resetCookies ($userCookie, $csrfCookie); 
-                $this -> updateCookies('', '');
-                $trace->debugTab("Cookies apres reset 2", $_COOKIE);
-            }
-        }
     }
 }

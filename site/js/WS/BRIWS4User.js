@@ -22,7 +22,7 @@ export class BRIWS4User extends BRIWSBase {
         let l = new BRILogger('BRIWSUserCreatePasswd');
         l.debug ("BRIWS4User::initPasswd");
 
-        let dataToSend = {'coucou': 'valeur', 'email': this._userInfo['email']};
+        let dataToSend = { 'requete': 'init_passwd', 'args': [{'email': this._userInfo['email']}]};
         let ajaxParam = {
             data : dataToSend,
             url : '../../server/WS/BRIUser.php', 

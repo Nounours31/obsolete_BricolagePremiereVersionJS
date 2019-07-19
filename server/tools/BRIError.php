@@ -12,7 +12,8 @@
  *
  * @author PFS
  */
-include_once './BRILogger.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php';
+
 
 class BRIError {
     private $_logger = null;
@@ -24,10 +25,10 @@ class BRIError {
     protected $_msg = "";
     
     public function __construct($errcode, $msg = 'Err message non value') {
-        $_logger = new Traces();
+        $this -> _logger = new BRILogger();
 
         $this->_errcode = $errcode;
-        $this-> _msg = msg;
+        $this-> _msg = $msg;
         if ($errcode == 0)
             $this-> _msg = "S_OK";
         if ($errcode == 1)
@@ -78,15 +79,15 @@ class BRIError {
         return new BRIError(BRIError::$_S_OK);
     }
     
-    function FAILED ($e) {
-        if ($e -> _errcode == BRIError::$_S_OK) {
+    function FAILED () {
+        if ($this -> _errcode == BRIError::$_S_OK) {
             return false;
         }
         return true;
     }
 
-    function SUCCEEDED ($e) {
-        $rc = BRIError::FAILED($e);
+    function SUCCEEDED () {
+        $rc = $this -> FAILED();
         $rc = ($rc ? false : true);
         return $rc;
     }
@@ -113,7 +114,7 @@ class BRIError {
     }
 
     public function Dump () {
-        $_logger -> debug($this -> toString());
+        $this -> _logger -> debug($this -> toString());
     }
 }
 

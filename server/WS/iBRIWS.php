@@ -1,7 +1,9 @@
 <?php
 
-include_once '../Envt/BRIENVT.php';
-include_once '../modele/BRISecurite.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/modele/BRISecurite.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRITools.php';
 
 abstract class iBRIWS {
 
@@ -11,7 +13,7 @@ abstract class iBRIWS {
     // ctor
     // --------------------------------------------------------------------------------------
     function __construct($className = "abstrart class iBRIWS") {
-        $logger = new BRILogger($className);
+        $this -> logger = new BRILogger($className);
     }
 
     // --------------------------------------------------------------------------------------
@@ -19,13 +21,13 @@ abstract class iBRIWS {
     // --------------------------------------------------------------------------------------
     /* Check if session info are set */
     function lightCheckBeforeStart() {
-        $logger->All("StepInto lightCheckBeforeStart");
+        $this -> logger->all("StepInto lightCheckBeforeStart");
         $secu = new BRISecurite();
         $secu->lightCheck();
     }
 
     function checkBeforeStart() {
-        $logger->All("StepInto checkBeforeStart");
+        $this -> logger->all("StepInto checkBeforeStart");
         $secu = new BRISecurite();
         $secu->Check();
     }
@@ -33,11 +35,9 @@ abstract class iBRIWS {
     // --------------------------------------------------------------------------------------
     // Inputs parser
     // --------------------------------------------------------------------------------------
-    function decodeInput($postarray, $getarray) {
-        $retour = new iBRIWSMessageIN();
-        
+    function decodeInput() {
+        $retour = new iBRIWSMessageIN();        
         $contenu = array();
-        $loger = new BRITraces();
 
         //Make sure that it is a POST request.
         if (strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0) {
@@ -46,7 +46,7 @@ abstract class iBRIWS {
 
         // selon le contenu parsing different
         $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-        $loger->debug("JSONTools.php -- contentType: -->" . $contentType . "<--");
+        $this -> logger->debug("JSONTools.php -- contentType: -->" . $contentType . "<--");
         if (strstr($contentType, 'application/json') === FALSE) {
             if (strstr($contentType, 'x-www-form-urlencoded') === FALSE) {
                 if (strstr($contentType, 'multipart/form-data') === FALSE) {
@@ -55,14 +55,17 @@ abstract class iBRIWS {
                     $contenu = $this->_decodeMultiPartFormData();
                 }
             } else {
-                $contenu = $this->_decodeFormURLEncodedInput($postarray, $getarray);
+                $contenu = $this->_decodeFormURLEncodedInput();
             }
         } else {
-            $contenu = $this->_decodeJSONInput($postarray, $getarray);
+            $contenu = $this->_decodeJSONInput();
         }
         
         $err = $retour -> buildFromArray ($contenu);
-        
+        if ($err -> FAILED()) {
+            $this -> logger-> debugTab("Contenu invalide:", $contenu);
+            throw new Exception('unable to parse ' . $err -> toString() . ' --- ');
+        }
         return $retour;
     }
 
@@ -70,22 +73,34 @@ abstract class iBRIWS {
     // Private Inputs parser selon les infos entrees
     // --------------------------------------------------------------------------------------
     private function _decodeJSONInput() {
-        $logger->All("StepInto _decodeJSONInput");
+        $this -> logger -> all("StepInto _decodeJSONInput");
 
         //Receive the RAW post data.
         $content = trim(file_get_contents("php://input"));
-        $logger->debug("JSONTools.php -- POST content: -->" . $content . "<--");
+        $this -> logger ->debug("JSONTools.php -- POST content: -->" . $content . "<--");
 
         //Attempt to decode the incoming RAW post data from JSON.
         $decoded = json_decode($content, true);
-        $logger->debugTab("JSONTools.php -- POST decoded", $decoded);
+        $this -> logger ->debugTab("JSONTools.php -- POST decoded", $decoded);
 
         return $decoded;
     }
 
     private function _decodeFormURLEncodedInput() {
-        $logger->All("StepInto _decodeFormURLEncodedInput");
-
+        $this -> logger-> all("StepInto _decodeFormURLEncodedInput");
+        $this -> logger-> all('Message Input a parser:');
+        $msg = '';
+        foreach ($_POST as $key => $value) {
+            $msg .= '['.$key.'] = ';
+            if (is_array($value))
+                $msg .= BRITools::arrayToString($value);
+            else 
+                $msg .= $value;
+            $msg .= '; ';
+        }
+        $this -> logger-> all($msg);
+        
+        
         $decode = array();
         foreach ($_POST as $key => $value) {
             $decode[$key] = $value;
@@ -94,18 +109,18 @@ abstract class iBRIWS {
     }
 
     private function _decodeMultiPartFormData() {
-        $logger->All("StepInto _decodeMultiPartFormData");
+        $this -> logger->all("StepInto _decodeMultiPartFormData");
 
         $decode = array();
         if (isset($_POST)) {
-            $loger->debugTab("decode POST:", $_POST);
+            $this -> logger->debugTab("decode POST:", $_POST);
             foreach ($_POST as $key => $value) {
                 $decode[$key] = $value;
             }
         }
 
         if (isset($_FILES)) {
-            $loger->debugTab("decode FILES:", $_FILES);
+            $this -> logger->debugTab("decode FILES:", $_FILES);
             $decode['__FILES__'] = array();
             foreach ($_FILES as $key => $value) {
                 $isMultipleUpload = false;
@@ -124,7 +139,7 @@ abstract class iBRIWS {
                     $unFichier['name'] = $_FILES[$key]['name'];
                     $unFichier['type'] = $_FILES[$key]['type'];
                     $unFichier['absolute_path'] = $_FILES[$key]['tmp_name'];
-                    $decode['__FILES__'][Tools::UUID()] = $unFichier;
+                    $decode['__FILES__'][BriTools::UUID()] = $unFichier;
                 } else {
                     for ($i = 0; $i < count($_FILES[$key]['name']); $i++) {
                         if ($_FILES[$key]['error'][$i] != 0) {
@@ -138,8 +153,8 @@ abstract class iBRIWS {
                         $unFichier['name'] = $_FILES[$key]['name'][$i];
                         $unFichier['type'] = $_FILES[$key]['type'][$i];
                         $unFichier['absolute_path'] = $_FILES[$key]['tmp_name'][$i];
-                        $decode['__FILES__'][Tools::UUID()] = $unFichier;
-                        $loger->debugTab("FILES decode Interne: ", $decode);
+                        $decode['__FILES__'][BRITools::UUID()] = $unFichier;
+                        $this -> logger->debugTab("FILES decode Interne: ", $decode);
                     }
                 }
             }

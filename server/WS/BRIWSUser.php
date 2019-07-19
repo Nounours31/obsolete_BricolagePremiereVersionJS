@@ -1,12 +1,10 @@
 <?php
-include_once '../Envt/BRIENVT.php';
-include_once '../tools/BRILogger.php';
-include_once '../modele/BRIUser.php';
-//include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cPasswordManagement.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/modele/BRIUser.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/WS/iBRIWS.php';
 
-
-
-class iBRIWSUser extends iBRIWS {
+class BRIWSUser extends iBRIWS {
     // --------------------------------------------------------------------------------------
     // ctor
     // --------------------------------------------------------------------------------------

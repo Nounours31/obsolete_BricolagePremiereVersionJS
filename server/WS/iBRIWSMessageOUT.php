@@ -1,7 +1,7 @@
 <?php
 
-include_once '../Envt/BRIENVT.php';
-include_once '../modele/BRISecurite.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
+
 
 class iBRIWSMessageOUT {
     protected $logger = null;
@@ -20,29 +20,37 @@ class iBRIWSMessageOUT {
     // Convertisseiur et debug
     // --------------------------------------------------------------------------------------
     function buildFromError ($err) {
-        $retour = new iBRIWSMessage();
-        
-        $retour -> status = ($err -> getErrorCode() == 0 ? 0 : 1);
-        $retour ->  type = 'erreur';
-        $aData = $retour -> data;
+        $this -> status = ($err -> getErrorCode() == 0 ? 0 : 1);
+        $this ->  type = 'erreur';
+        $aData = $this -> data;
         $aData['errno'] = $err -> getErrorCode();
         $aData['message'] = $err -> getMessage();
-        return $retour;
+        return;
     }
     
+    function buildFromException ($e) {
+        $this -> status = 1;
+        $this ->  type = 'exception';
+        $aData = $this -> data;
+        $aData['errno'] = '55';
+        $aData['message'] = $e -> getMessage();
+        return;
+    }
+    
+    
     public function toString () {
-        $retour = "{Err: ".$this -> getErrorCode().";   msg:".$this -> getMessage()."}";
+        $retour =  "{status: ".$this->status.";   type:".$this->type.";   data:".$this->type."\n";
+        $retour .= '\t\terrno: '.$this->data['errno'].'      message:'.$this->data['errno'].'}';
         return $retour;
     }
     
     public function toJSON () {
-        $e = $this -> toArray();    
-        $r = json_encode ($e);
+        $r = json_encode ($this);
         return  $r;
     }
 
     public function Dump () {
-        $_logger -> debug($this -> toString());
+        $this->logger -> debug($this -> toString());
     }
 }
 ?>

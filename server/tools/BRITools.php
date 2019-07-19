@@ -19,7 +19,7 @@ class BRITools {
         
         foreach ($array as $key => $value) {
             if (is_array($value)) {
-                $r = Tools::arrayToString($value);
+                $r = BRITools::arrayToString($value);
                 $s .= '['.$key.' : ['.$r.']]';
             }
             else if (is_object($value)) {

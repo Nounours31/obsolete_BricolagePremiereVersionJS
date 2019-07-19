@@ -12,8 +12,15 @@ ini_set('display_errors', 'on');
  */
 class BRIConst {
     const isLOCALSERVER = true;
-    const tracePATHTODISK = "logs/";
-    const ExternalFilePATHTODISK = "upload/CACI/";
+    
+    // le root
+    const relativeDocRoot = 'Bricolage2/';
+    
+    // fichier a uploader
+    const ExternalFilePATHTODISK = BRIConst::relativeDocRoot . 'upload/';
+    
+    // log php
+    const tracePATHTODISK = BRIConst::relativeDocRoot . 'logs/';
     const traceFILE = "traces.log";
 
     // Debug Info

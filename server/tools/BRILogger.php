@@ -11,15 +11,14 @@
  *
  * @author PFS
  */
-include_once('../BRIEnvt/BRIBRIEnvt.php');
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
 
 class BRILogger {
     public $_FilePath = null;
     public $_Prefix = null;
 
     function __construct($prefix = 'inconnu') {
-        $pathForLog = $_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/traces';
-        // $this->_FilePath = BRIEnvt::DEBUGtraceFILE . BRIEnvt::SiteName . BRIEnvt::tracePATHTODISK;
+        $pathForLog = $_SERVER['DOCUMENT_ROOT'].BRIConst::tracePATHTODISK; 
         $this->_FilePath = $pathForLog;
         $this->_Prefix = $prefix;
         try {
@@ -28,24 +27,24 @@ class BRILogger {
             }
         }
         catch (Exception $e) {
-            echo 'Exception reçue : ',  $e->getMessage(), "\n";
+            echo 'Exception recue : ',  $e->getMessage(), "\n";
             echo 'mkdir KO of : '.$this->_FilePath;
         }
-        $this->_FilePath = $this->_FilePath .'/'.BRIEnvt::traceFILE;
+        $this -> _FilePath = $this->_FilePath . BRIConst::traceFILE;
     }
 
-    public function prefix($prefix) {
+    private function prefix($prefix) {
         $this->_Prefix = $prefix;
         return;
     }
 
-    public function DebugTraceTableau($Message, $Tab, $level) {
+    private function DebugTraceTableau($Message, $Tab, $level) {
         $s = BRITools::arrayToString($Tab);
         $this->DebugTrace($Message . "  " . $s, $level);
         return;
     }
 
-    public function DebugTrace($Message, $level) {
+    private function DebugTrace($Message, $level) {
         $TraceLevel = BRIEnvt::getDebugLevel();
 
         if ($TraceLevel <= $level) {
@@ -64,27 +63,26 @@ class BRILogger {
                 // print ($logMsg);
             }
             catch (Exception $e) {
-                echo 'Exception reçue : ',  $e->getMessage(), "\n";
+                echo 'Exception recue : ',  $e->getMessage(), "\n";
                 echo 'mkdir KO of : '.$this->_FilePath;
             }
         }
         return;
     }
 
-    public function log($Message) {
-        return $this->DebugTrace($Message, BRIEnvt::_INFO);
+    public function all($Message) {
+        return $this->DebugTrace($Message, BRIConst::_INFO);
     }
 
     public function debug($Message) {
-        return $this->DebugTrace($Message, BRIEnvt::_DEBUG);
-    }
-
-    public function debugTab($Message, $anArray) {
-        return $this->DebugTraceTableau($Message, $anArray, BRIEnvt::_DEBUG);
+        return $this->DebugTrace($Message, BRIConst::_DEBUG);
     }
 
     public function fatal($Message) {
-        return $this->DebugTrace($Message, BRIEnvt::_FATAL);
+        return $this->DebugTrace($Message, BRIConst::_FATAL);
     }
 
+    public function debugTab($Message, $anArray) {
+        return $this->DebugTraceTableau($Message, $anArray, BRIConst::_DEBUG);
+    }
 }

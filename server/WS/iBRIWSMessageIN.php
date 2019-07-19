@@ -1,13 +1,14 @@
 <?php
 
-include_once '../Envt/BRIENVT.php';
-include_once '../modele/BRISecurite.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/modele/BRISecurite.php';
+
 
 class iBRIWSMessageIN {
     protected $logger = null;
     private $requete = 'none';
     private $args = array();
-    private $avalaibleRequete = array ('user_resetpwd', 'user_', 'resa_');
+    private $avalaibleRequete = array ('init_passwd', 'user_', 'resa_');
 
     // --------------------------------------------------------------------------------------
     // ctor
@@ -30,17 +31,14 @@ class iBRIWSMessageIN {
             return $err;
         }
         
-        if (!in_array ($a['requete'], $avalaibleRequete)) {
+        if (!in_array ($a['requete'], $this -> avalaibleRequete)) {
             $err = new BRIError (5, "iBRIWSMessageIN - La requete n'est pas implementee");
             return $err;            
         }
-
-        if (!in_array ($a['requete'], $avalaibleRequete)) {
-            $err = new BRIError (5, "iBRIWSMessageIN - La requete n'est pas implementee");
-            return $err;            
-        }
-        
+       
         $this -> requete = $a['requete'];
+        
+        
         if (isset ($a['args'])) {
             if (is_array($a['args'])) {
                 $this -> args = $a['args'];            
@@ -55,12 +53,12 @@ class iBRIWSMessageIN {
     }
     
     public function toString () {
-        $retour = "{Err: ".$this -> requete.";   msg:".BRITools::arrayToString($this -> args)."}";
+        $retour = "{Requete: ".$this -> requete.";   Args: ".BRITools::arrayToString($this -> args)."}";
         return $retour;
     }
     
     public function Dump () {
-        $_logger -> debug($this -> toString());
+        $this->logger -> debug($this -> toString());
     }
 }
 ?>
