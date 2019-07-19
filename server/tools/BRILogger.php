@@ -17,8 +17,8 @@ class BRILogger {
     public $_FilePath = null;
     public $_Prefix = null;
 
-    function __construct($prefix = 'inconnu') {
-        $pathForLog = $_SERVER['DOCUMENT_ROOT'].BRIConst::tracePATHTODISK; 
+    function __construct($prefix = 'Inconnu') {
+        $pathForLog = $_SERVER['DOCUMENT_ROOT'].BRIConst::relativeDocRoot.BRIConst::tracePATHTODISK; 
         $this->_FilePath = $pathForLog;
         $this->_Prefix = $prefix;
         try {
@@ -30,7 +30,7 @@ class BRILogger {
             echo 'Exception recue : ',  $e->getMessage(), "\n";
             echo 'mkdir KO of : '.$this->_FilePath;
         }
-        $this -> _FilePath = $this->_FilePath . BRIConst::traceFILE;
+        $this -> _FilePath = $this->_FilePath.BRIConst::traceFILE;
     }
 
     private function prefix($prefix) {

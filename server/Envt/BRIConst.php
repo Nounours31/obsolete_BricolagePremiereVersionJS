@@ -17,18 +17,25 @@ class BRIConst {
     const relativeDocRoot = 'Bricolage2/';
     
     // fichier a uploader
-    const ExternalFilePATHTODISK = BRIConst::relativeDocRoot . 'upload/';
+    const ExternalFilePATHTODISK = 'upload/';
     
     // log php
-    const tracePATHTODISK = BRIConst::relativeDocRoot . 'logs/';
+    const tracePATHTODISK = 'logs/';
     const traceFILE = "traces.log";
 
     // Debug Info
     const _ALL = 1;
     const _DEBUG = 10;
     const _INFO = 50;
+    const _ERROR = 75;
     const _FATAL = 99;
+    
+    // Type de message de sortie
+    const _MSG_OUT_NOACTION = 55;
+    const _MSG_OUT_ERROR = 1;
+    const _MSG_OUT_OK = 0;
 
+    
     // DB Cnx
     const DBUser = "root"; /*"cedssectbrico";*/
     const DBPassword =""; /* "4WxyJJNH";*/

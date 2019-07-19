@@ -13,6 +13,6 @@
  */
 
 abstract class iBRIModel { 
-    function __construct() {
+    function __construct($info) {
     }
 }

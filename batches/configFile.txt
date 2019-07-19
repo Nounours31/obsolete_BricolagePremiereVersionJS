@@ -1,0 +1,6 @@
+# this is a comment, we ask to follow redirects
+--location
+# ask to do a HEAD request
+--head
+user-agent = "java"
+url = "http://example.com"

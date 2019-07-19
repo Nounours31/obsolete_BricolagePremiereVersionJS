@@ -25,7 +25,7 @@ class BRIError {
     protected $_msg = "";
     
     public function __construct($errcode, $msg = 'Err message non value') {
-        $this -> _logger = new BRILogger();
+        $this -> _logger = new BRILogger('BRIError');
 
         $this->_errcode = $errcode;
         $this-> _msg = $msg;
@@ -114,7 +114,7 @@ class BRIError {
     }
 
     public function Dump () {
-        $this -> _logger -> debug($this -> toString());
+        $this -> _logger -> debug('Dump error: '.$this -> toString());
     }
 }
 

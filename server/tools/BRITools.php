@@ -50,4 +50,31 @@ class BRITools {
         }
         return true;
     }
+    
+    public static function GenerateJSONErrorMessage($errno, $l) {
+        switch ($errno) {
+        case JSON_ERROR_NONE:
+            $l -> fatal (' - Aucune erreur');
+            break;
+        case JSON_ERROR_DEPTH:
+            $l -> fatal ( ' - Profondeur maximale atteinte');
+            break;
+        case JSON_ERROR_STATE_MISMATCH:
+            $l -> fatal ( ' - Inadéquation des modes ou underflow');
+            break;
+        case JSON_ERROR_CTRL_CHAR:
+            $l -> fatal ( ' - Erreur lors du contrôle des caractères');
+            break;
+        case JSON_ERROR_SYNTAX:
+            $l -> fatal ( ' - Erreur de syntaxe ; JSON malformé');
+            break;
+        case JSON_ERROR_UTF8:
+            $l -> fatal ( ' - Caractères UTF-8 malformés, probablement une erreur d\'encodage');
+            break;
+        default:
+            $l -> fatal ( ' - Erreur inconnue');
+            break;
+        }
+    }
+    
 }

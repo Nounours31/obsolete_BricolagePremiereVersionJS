@@ -80,33 +80,39 @@ export class BRIWSBase {
     
     fct_setCustomheader(jqXHR, settings) { 
         let l = new BRILogger ('BRIWSBase::fct_setCustomheader');
-        l.debug('Step in fct_setCustomheader'); 
-        l.debug(jqXHR); 
-        l.debug(settings); 
+        l.all('Step in fct_setCustomheader'); 
+        l.all(jqXHR); 
+        l.all(settings); 
     }
     fct_success(data, textStatus, jqXHR) {  
         let l = new BRILogger ('BRIWSBase::fct_success');
         l.debug('Step in fct_success'); 
-        l.debug(jqXHR); 
-        l.debug(textStatus); 
-        l.debug(data); 
+        l.debug(`textStatus: ${textStatus}`); 
+        l.debug(`data: ${data}`); 
+        l.debug(`jqXHR: ${jqXHR}`); 
+        l.debug(`jqXHR.status: ${jqXHR.status}`); 
+        l.debug(`jqXHR.statusText: ${jqXHR.statusText}`); 
+        l.debug('jqXHR.response: '+(typeof jqXHR.responseXML !== 'undefined' ? jqXHR.responseXML : jqXHR.responseText)); 
     }
     fct_error(jqXHR, textStatus, errorThrown) {  
         let l = new BRILogger ('BRIWSBase::fct_error');
-        l.debug('Step in fct_error'); 
-        l.debug(jqXHR); 
-        l.debug(textStatus); 
-        l.debug("Error trace: " + errorThrown.message); 
-        l.debug("Error stack: " + errorThrown.stack); 
-        l.debug("recu: " + (typeof jqXHR.responseXML !== 'undefined' ? jqXHR.responseXML : jqXHR.responseText)); 
+        l.error('Step in fct_error'); 
+        l.error(jqXHR); 
+        l.error(textStatus); 
+        l.error("Error trace: " + errorThrown.message); 
+        l.error("Error stack: " + errorThrown.stack); 
+        l.error("recu: " + (typeof jqXHR.responseXML !== 'undefined' ? jqXHR.responseXML : jqXHR.responseText)); 
     }
     fct_manageError(jqXHR) {  
         let l = new BRILogger ('BRIWSBase::fct_manageError');
-        l.debug('Step in fct_manageError'); 
-        if (!BRIEnv.bUse404AjaxRedirect) {
+        l.error('Step in fct_manageError'); 
+        if (BRIEnvt.bUse404AjaxRedirect) {
             if (jqXHR.status != 0) {
               document.location = BRIEnvt.siteLocation + `/site/html/BRIServerError.php?status=${jqXHR.status}`;
             }
+        }
+        else {
+
         }
     }
     fct_requestfinished(jqXHR, textStatus) {  

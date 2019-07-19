@@ -9,6 +9,8 @@ import { BRIConst } from '../env/BRIConst.js';
 import { BRIEnvt } from '../env/BRIEnvt.js';
 import { BRILogger } from '../tools/BRILogger.js';
 import { BRIWSBase } from './BRIWSBase.js';
+import { BRIWSMessageClient2Server_php } from './BRIWSMessageClient2Server_php.js';
+import { BRIWSMessageServer2Client_php } from './BRIWSMessageServer2Client_php.js';
 
 export class BRIWS4User extends BRIWSBase {
     constructor(jsonObjInfo) {
@@ -22,10 +24,10 @@ export class BRIWS4User extends BRIWSBase {
         let l = new BRILogger('BRIWSUserCreatePasswd');
         l.debug ("BRIWS4User::initPasswd");
 
-        let dataToSend = { 'requete': 'init_passwd', 'args': [{'email': this._userInfo['email']}]};
+        let dataToSend = new BRIWSMes{ 'requete': 'init_passwd', 'args': [{'email': this._userInfo['email']}]};
         let ajaxParam = {
             data : dataToSend,
-            url : '../../server/WS/BRIUser.php', 
+            url : '../../server/WS/BRIWSUserServices.php', 
             contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
             fct_success : null,
             fct_error : null,
