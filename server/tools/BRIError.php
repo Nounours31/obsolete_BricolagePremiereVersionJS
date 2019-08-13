@@ -94,7 +94,6 @@ class BRIError {
     
     function toArray () {
         $retour = array();
-        $retour['status'] = ($this -> getErrorCode() == 0 ? 0 : 1);
         $retour['type'] = 'erreur';
         $retour['data'] = array ();
         $retour['data']['errno'] = $this -> getErrorCode();
@@ -107,14 +106,42 @@ class BRIError {
         return $s;
     }
     
+    /*
     public function toJSON () {
         $e = $this -> toArray();    
         $r = json_encode ($e);
         return  $r;
-    }
+    }*/
 
     public function Dump () {
         $this -> _logger -> debug('Dump error: '.$this -> toString());
     }
+    
+    public static function GenerateJSONErrorMessage($errno, $l) {
+        switch ($errno) {
+        case JSON_ERROR_NONE:
+            $l -> fatal (' - Aucune erreur');
+            break;
+        case JSON_ERROR_DEPTH:
+            $l -> fatal ( ' - Profondeur maximale atteinte');
+            break;
+        case JSON_ERROR_STATE_MISMATCH:
+            $l -> fatal ( ' - Inadequation des modes ou underflow');
+            break;
+        case JSON_ERROR_CTRL_CHAR:
+            $l -> fatal ( ' - Erreur lors du controle des caracteres');
+            break;
+        case JSON_ERROR_SYNTAX:
+            $l -> fatal ( ' - Erreur de syntaxe ; JSON malforme');
+            break;
+        case JSON_ERROR_UTF8:
+            $l -> fatal ( ' - Caracteres UTF-8 malformes, probablement une erreur d\'encodage');
+            break;
+        default:
+            $l -> fatal ( ' - Erreur inconnue');
+            break;
+        }
+    }
+
 }
 

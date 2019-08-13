@@ -11,17 +11,56 @@
  *
  * @author PFS
  */
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/iSendMail.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/iSendMail.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . 'Bricolage2/server/tools/BRILogger.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . 'Bricolage2/server/tools/BRITools.php';
+
+
 class cMailer extends iSendMail {
+    private $_to;
+    private $_cc;
+    private $_bcc;
+    private $_subject;
+    private $_body;
+    private $_logger;
+
     public function __construct() {
+        $this -> _to = [];
+        $this -> _cc = [];
+        $this -> _bcc = [];
+        $this -> _subject = "no subject";
+        $this -> _body = "no body";
+        $this->_logger = new BRILogger('cMailer');
     }
     
     public function __destruct() {
     }
     
+
+    private function _sendMail() {
+        parent::sendMail($this -> _to, $this ->  _cc, $this -> _subject, $this -> _body);
+    }
+
+    public static function sendMailToMultipleUserEmail($listEMailUser, $subject, $body) {
+        $x = new cMailer();
+        $x -> _subject = $subject;
+        $x -> _body = $body;
+        if (!is_array($listEMailUser)) {
+            $a = array();
+            array_push($a, $listEMailUser);
+            $listEMailUser = $a;
+        }
+        foreach ($listEMailUser as $value) {
+            $x -> _to[$value] = $value;
+        }
+        return $x -> _sendMail();
+    }
+
+    
+    
     public static function sendMailToAdmin($subject, $body) {
         $listUser = array();
-        $users = new cUser();
+        $users = new BRIUser();
         $aAdmins = $users -> getAdministrators();
         foreach ($aAdmins as $value) {
             $email = $users -> getEmail($value);
@@ -80,16 +119,7 @@ class cMailer extends iSendMail {
         $users = new cUser();
         foreach ($listUidUser as $value) {
             array_merge($listEMailUser, $users -> getEmail($value));
-        }
+        }        
         return cMailer::sendMailToMultipleUserEmail($listEMailUser, $subject, $body);
-    }
-    
-    public static function sendMailToMultipleUserEmail($listEMailUser, $subject, $body) {
-        $to = array();
-        foreach ($listEMailUser as $value) {
-            $to[$value] = $value;
-        }
-        $cc['pfs@3ds.com'] = 'Nounours';
-        return cMailer::sendMail($to, $cc, $subject, $body);
-    }
+    }   
 }

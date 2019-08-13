@@ -9,10 +9,13 @@ import { BRIConst } from '../env/BRIConst.js';
 import { BRIEnvt } from '../env/BRIEnvt.js';
 import { BRILogger } from '../tools/BRILogger.js';
 import { BRIError } from '../tools/BRIError.js';
+import { BRIWSMessageServer2Client } from './BRIWSMessageServer2Client.js';
+
 
 export class BRIWSBase {
     constructor() {
         this._logger = new BRILogger('BRIWSBase');
+        this._repository = [];
     }
 
     sendRequest (ajaxParam) {
@@ -22,15 +25,17 @@ export class BRIWSBase {
         }
 
         /* passage de jsaon a var */
+        let repoId         = (typeof ajaxParam.repoId !== 'undefined' ? ajaxParam.repoId : null);
         let data        = (typeof ajaxParam.data !== 'undefined' ? ajaxParam.data : {});
         let async       = (typeof ajaxParam.async !== 'undefined' ? ajaxParam.async : true);
         let method      = (typeof ajaxParam.method !== 'undefined' ? ajaxParam.method : 'POST');
         let url         = (typeof ajaxParam.url !== 'undefined' ? ajaxParam.url : 'localhost'); 
         let cache       = (typeof ajaxParam.cache !== 'undefined' ? ajaxParam.cache : true);
         let contentType = (typeof ajaxParam.contentType !== 'undefined' ? ajaxParam.contentType : 'application/x-www-form-urlencoded; charset=UTF-8' );
-        let fct_success = (typeof ajaxParam.fct_success !== 'undefined' ? ajaxParam.fct_success : null);
-        let fct_error   = (typeof ajaxParam.fct_error !== 'undefined' ? ajaxParam.fct_error : null);
-        let fct_requestfinished = (typeof ajaxParam.fct_requestfinished !== 'undefined' ? ajaxParam.fct_requestfinished : null);
+        let fct_success = (((typeof ajaxParam.fct_success !== 'undefined')&&(ajaxParam.fct_success!=null)) ? ajaxParam.fct_success : this.fct_success);
+        let fct_error   = (((typeof ajaxParam.fct_error !== 'undefined')&&(ajaxParam.fct_error!=null)) ? ajaxParam.fct_error : this.fct_error);
+        let fct_requestfinished = (((typeof ajaxParam.fct_requestfinished !== 'undefined')&&(ajaxParam.fct_requestfinished!=null)) ? ajaxParam.fct_requestfinished : this.fct_requestfinished);
+        let fct_manageError =  this.fct_manageError;
  
         let me = this;
         let httprequest = $.ajax ({
@@ -47,18 +52,26 @@ export class BRIWSBase {
               },
             'mimeType': 'json', /* force mime type */
             'content': 'application/json', /* response content type */
-            'data': data,
+            'data': JSON.stringify (data),
             'context': document.body, /* ex: sera this dans cet exempl --> xxx.done(function() { $( this ).addClass( "done" );*/ 
             'converters': {"* text": window.String, "text html": true, "text json": jQuery.parseJSON, "text xml": jQuery.parseXML},
             'timeout': 0, /* in milli sec' */
 
-            'success': (fct_success == null? this.fct_success : fct_success),
-            'error': function (jqXHR, textStatus, errorThrown) {
-                        let f1 = (fct_error == null? me.fct_error : fct_error);
-                        f1 (jqXHR, textStatus, errorThrown);
-                        me.fct_manageError (jqXHR);
+            'success': function(data, textStatus, jqXHR) {
+                        if (repoId != null) {
+                            let Obj = {
+                                date: new Date().getTime(),
+                                data: BRIWSMessageServer2Client.buildFromTxt (data)
+                            };
+                            me._repository[repoId] = Obj;
+                        }
+                        fct_success (data, textStatus, jqXHR);
                     },
-            'done': (fct_requestfinished == null? this.fct_requestfinished : fct_requestfinished),
+            'error': function (jqXHR, textStatus, errorThrown) {
+                        fct_error (jqXHR, textStatus, errorThrown);
+                        fct_manageError (jqXHR);
+                    },
+            'done': fct_requestfinished,
         });
 
 //        httprequest.done (fct_success == null? this.fct_success : fct_success); /* Function( Anything data, String textStatus, jqXHR jqXHR ) */
@@ -77,7 +90,6 @@ export class BRIWSBase {
             setRequestHeader( name, value ) which departs from the standard by replacing the old value with the new one rather than concatenating the new value to the old one
             statusCode( callbacksByStatusCode ) */
     }
-    
     fct_setCustomheader(jqXHR, settings) { 
         let l = new BRILogger ('BRIWSBase::fct_setCustomheader');
         l.all('Step in fct_setCustomheader'); 
@@ -121,8 +133,6 @@ export class BRIWSBase {
         l.debug(jqXHR); 
         l.debug(textStatus); 
     }
-
-
 }
 
 

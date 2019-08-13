@@ -2,10 +2,27 @@
 
 include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
 
+/*******************************************************************************
+ * Classe des message qui sont echanger entre le Server et le client
+ * La classe JS est en pendant de celle ci
+ * 
+ * Attention NE PAS Ecrire de message qui ne passe pas par cette classe
+ * apres c'es la merde a debugger  
+ * 
+ *  A enrichir en // avec le JS !
+ * 
+ * messageOut = 
+ * {
+ *    type="error" ou "message"  
+ *    data = 
+ *       <si erreur> data[errorno] & data[data]
+ *       <sinon> data[data]
+ * }
+
+ *******************************************************************************/
 
 class BRIWSMessageServer2Client {
     protected $logger = null;
-    protected $status = 0;
     protected $type   = '';
     protected $data   = array ();
 
@@ -14,59 +31,64 @@ class BRIWSMessageServer2Client {
     // --------------------------------------------------------------------------------------
     function __construct() {
         $this-> logger =  new BRILogger ('iBRIWSMessageOUT');
-        $this -> status = BRIConst::_MSG_OUT_NOACTION;
-        $this -> type = 'xxx';
-        $this -> data['errno'] = 0;
-        $this -> data['message'] = '';
+        $this -> type = BRIConst::_MSG_TYPE_UNDEF;
+        $this -> data[BRIConst::_MSG_TYPE_ERRORNO] = -1;
+        $this -> data[BRIConst::_MSG_TYPE_MESSAGE] = '';
     }
 
     // --------------------------------------------------------------------------------------
     // Convertisseiur et debug
     // --------------------------------------------------------------------------------------
     function buildEmptyMessage () {
-        $this -> status = BRIConst::_MSG_OUT_NOACTION;
-        $this ->  type = 'xxx';
-        $this -> data['errno'] = 0;
-        $this -> data['message'] = '';
+        $this ->  type = BRIConst::_MSG_TYPE_MESSAGE;
+        $this -> data[BRIConst::_MSG_TYPE_ERRORNO] = -1;
+        $this -> data[BRIConst::_MSG_TYPE_MESSAGE] = '';
         return;
     }
     
     function buildFromError ($err) {
-        $this -> status = BRIConst::_MSG_OUT_ERROR;
-        $this -> type = 'erreur';
-        $this -> data['errno'] = $err -> getErrorCode();
-        $this -> data['message'] = $err -> getMessage();
+        $this -> type = BRIConst::_MSG_TYPE_ERROR;
+        $this -> data[BRIConst::_MSG_TYPE_ERRORNO] = $err->getErrorCode();
+        $this -> data[BRIConst::_MSG_TYPE_MESSAGE] = $err -> getMessage();
         return;
     }
     
+    
+    
     function buildFromException ($e) {
-        $this -> status = BRIConst::_MSG_OUT_ERROR;
-        $this -> type = 'exception';
-        $this -> data['errno'] = '55';
-        $this -> data['message'] = $e -> getMessage();
+        $this -> type = BRIConst::_MSG_TYPE_ERROR;
+        $this -> data[BRIConst::_MSG_TYPE_ERRORNO] = 9000000;
+        $this -> data[BRIConst::_MSG_TYPE_MESSAGE] = ($e -> getMessage()."Trace:".BRITools::arrayToString($e -> getTrace()));
         return;
     }
     
     function buildFromMessage ($msg) {
-        $this -> status = BRIConst::_MSG_OUT_OK;
-        $this -> type = 'WS response';
-        $this -> data['errno'] = '0';
-        $this -> data['message'] = msg;
+        $this -> type = BRIConst::_MSG_TYPE_MESSAGE;
+        $this -> data[BRIConst::_MSG_TYPE_ERRORNO] = -1;
+        $this -> data[BRIConst::_MSG_TYPE_MESSAGE] = msg;
         return;
     }
     
     public function toString () {
-        $retour =  "DUMP: [status: ".$this->status."]-[type:".$this->type."]"; 
-        $retour .= '-[data[errno]: '.$this->data['errno'].']-[data[message]:'.$this->data['message'].']';
+        $retour =  "DUMP: [type:".$this->type."]"; 
+        $retour .= '-[data[errno]: '.$this->data[BRIConst::_MSG_TYPE_ERRORNO].']-[data[data]:'.
+                BRITools::echapJSONPourMessageOut($this->data[BRIConst::_MSG_TYPE_MESSAGE]).']';
         return $retour;
     }
     
     public function toJSON () {
-        $json = '{"status": '.$this -> status.', "type" : "'.$this -> type.'", "data": [{"errno": '.$this -> data['errno'].'}, {"message":"'.$this -> data['message'].'"}]}';
+        $json = '{"type" : "'.$this -> type.'",';
+        if ($this -> data[BRIConst::_MSG_TYPE_ERRORNO] >= 0) {
+           $json .= '"data": [{"errno": '.$this -> data[BRIConst::_MSG_TYPE_ERRORNO].'}, {"data":"'. 
+                   BRITools::echapJSONPourMessageOut($this -> data[BRIConst::_MSG_TYPE_MESSAGE]).'"}]}';
+        }
+        else {
+            $json .= '"data": "'.BRITools::echapJSONPourMessageOut($this -> data[BRIConst::_MSG_TYPE_MESSAGE]).'"}';
+        }
         $r = json_encode ($json);
         if ($r === FALSE) {
             $this->logger -> fatal ('Error PARSING TO JSON');
-            BRITools::GenerateJSONErrorMessage(json_last_error(), $this->logger);
+            BRIError::GenerateJSONErrorMessage(json_last_error(), $this->logger);
         }
         return  $r;
     }

@@ -1,0 +1,5 @@
+{
+    "INIT_PASSWD_MAIL_SUBJECT":"[Personel - section bricolage]Initialisation ou re initialisation du mot de passe",
+    "INIT_PASSWD_MAIL_BODY":"Bonjour,<br/>Ce lien valable 15 minutes vous permettra de genere un nouveau mot de passe pour le site de la section bricolage: $1<br/>Cordialement,<br/>La section bricolage.",
+    "":""
+}

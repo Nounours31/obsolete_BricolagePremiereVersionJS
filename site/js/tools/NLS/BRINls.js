@@ -46,7 +46,10 @@ export class BRINls {
 
     /* return la valeur d'un TAG NLS avec des parametres dans le message */
     static getP(tag, replace) {
-        let tab = [replace];
+        let tab = replace;
+        if (!Array.isArray(replace)) {
+            tab = [replace];
+        }
         let nls = new BRINls();
         return nls._private_getPT(tag, tab);
     }

@@ -39,9 +39,15 @@ export class BRIAuthentification extends BRICommandeMere {
                 } 
                 else {
                     let notYetAUser = new BRIWS4User( { 'email' : email, });
-                    notYetAUser.initPasswd ();
-                    UIkit.modal.alert( BRINls.getP('LOGIN_CREATE_PWD_EMAIL_SEND', email));
-                    l.all ('mail envoyed');
+                    let rc=notYetAUser.initPasswd ();
+                    if (rc.isErrorMessage()) {
+                        let tab = [rc.getErrorCode(), rc.getErrorMessage()];
+                        UIkit.modal.alert( BRINls.getP('LOGIN_CREATE_ERROR', tab));
+                    }
+                    else {
+                        UIkit.modal.alert( BRINls.getP('LOGIN_CREATE_PWD_EMAIL_SEND', email));
+                        l.all ('mail envoyed');    
+                    }
                 }
             }
         });

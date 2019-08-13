@@ -14,6 +14,7 @@
 include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRIError.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRITools.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRIUID.php';
 
 
 class BRISecurite {
@@ -23,11 +24,24 @@ class BRISecurite {
     public function __destruct() {
     }
     
+    //-----------------------------------------
+    // secu minimal - que faut il y mettre ?
+    // attention meme sans etre logue on doit pouvoir passe (les WS
+    //-----------------------------------------
     public function lightCheck() {
+        $usercook = BRIUID::guid();
+        $this -> updateCookies ($usercook);
         return BRIError::S_OK();
     }
     
+    //-----------------------------------------
+    // secu optimale
+    //-----------------------------------------
     public function Check() {
+        // -----------------------------------------
+        // check des cookies de session
+        // si invalide on demande la reconnexion
+        // -----------------------------------------
         $iErr = $this -> isCookiesValid();
         if ($iErr -> FAILED()) {
             $trace = new BRILogger();
@@ -54,24 +68,14 @@ class BRISecurite {
     }
     
     
-    public function updateCookies($usercook, $csrfcook) {
+    public function updateCookies($usercook) {
         if (strlen($usercook) == 0) {
             setcookie(BRIEnvt::COOKIE_LOGGING, "deleted", time()+1, "/");
         }
         else {
             setcookie(BRIEnvt::COOKIE_LOGGING, $usercook, time()+3600, "/");
         }
-
-        if (strlen($csrfcook) == 0) {
-            setcookie(BRIEnvt::COOKIE_CSRF, "deleted", time()+1, "/"); 
-        }
-        else {
-            setcookie(BRIEnvt::COOKIE_CSRF,    $csrfcook, time()+3600, "/"); 
-        }
-    }
-
-    public function updateCSRFCookie($csrfcook) {
-        setcookie(BRIEnvt::COOKIE_CSRF,    $csrfcook, time()+3600, "/");        
+        //$User -> setCookieInDb()
     }
 
     public function clean () {

@@ -23,6 +23,7 @@ export const BRINlsAllMessages = {
      'LOGIN_CREATE_PWD_EMAIL_EMAIL': 'Email',
      'LOGIN_CREATE_PWD_EMAIL_INVALIDE': 'Syntaxe de l\'email invalide',
      'LOGIN_CREATE_PWD_EMAIL_SEND': 'Un mail a ete envoye a l\'adresse $1 avec la procedure a suivre. Le lien n\'est valable qu\'une heure',
+     'LOGIN_CREATE_ERROR': 'Initiation en erreur <br/>code:$1<br/>message:$2',
 }
 
 /* eslint-enable */

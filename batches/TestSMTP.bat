@@ -3,17 +3,19 @@ set CURL=%CURL_HOME%\bin\curl.exe
 
 call touch %CURL_HOME%\_curlrc
 
-set URI=http://dell2259dsy:88/Bricolage2/server/WS/BRIWS.php
+set URI=http://dell2259dsy:88/Bricolage2/server/WS
 set VERBOSE=-v
 set FOLLOWLINK=-L
 set SHOW_ERROR=-S
 set TRACE_TIME=--trace-time
 
+set SERVICE2TEST=BRIWSUserServices.php
 set MULTIPART=-F person=toto -F secretfile=@fileFormData.txt -H 'Content-Type: multipart/form-data'
 set POST=--data 'name=admin&shoesize=12' -H 'Content-Type: application/x-www-form-urlencoded' 
 set POST=--data @%SERVICE2TEST%.POST  -H 'Content-Type: application/x-www-form-urlencoded' 
 
-set POST=--data "{ \"requete\": \"init_passwd\", \"type\":\"user\", \"args\": [{\"email\": \"php@3ds.com\"}]}" -H "Content-Type: application/json" 
+
+set POST=--data "{ \"requete\": \"init_passwd\", \"args\": [{\"email\": \"d@d.s\"}]}" -H "Content-Type: application/json" 
 set OPTIONS=%VERBOSE% %FOLLOWLINK% %SHOW_ERROR% %TRACE_TIME%  %POST%
 
 %CURL% %OPTIONS% %URI%/%SERVICE2TEST%

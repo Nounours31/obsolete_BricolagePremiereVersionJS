@@ -8,9 +8,10 @@
 import { BRIConst } from '../env/BRIConst.js';
 import { BRIEnvt } from '../env/BRIEnvt.js';
 import { BRILogger } from '../tools/BRILogger.js';
+import { BRIToolsDivers } from '../tools/BRIToolsDivers.js';
 import { BRIWSBase } from './BRIWSBase.js';
-import { BRIWSMessageClient2Server_php } from './BRIWSMessageClient2Server_php.js';
-import { BRIWSMessageServer2Client_php } from './BRIWSMessageServer2Client_php.js';
+import { BRIWSMessageClient2Server } from './BRIWSMessageClient2Server.js';
+import { BRIWSMessageServer2Client } from './BRIWSMessageServer2Client.js';
 
 export class BRIWS4User extends BRIWSBase {
     constructor(jsonObjInfo) {
@@ -24,17 +25,25 @@ export class BRIWS4User extends BRIWSBase {
         let l = new BRILogger('BRIWSUserCreatePasswd');
         l.debug ("BRIWS4User::initPasswd");
 
-        let dataToSend = new BRIWSMes{ 'requete': 'init_passwd', 'args': [{'email': this._userInfo['email']}]};
+        let UID = BRIToolsDivers.generateUUID();
+        let dataToSend = new BRIWSMessageClient2Server ({ 'requete': 'init_passwd', 'type': 'user', 'args': [{'email': this._userInfo['email']}]});
         let ajaxParam = {
-            data : dataToSend,
-            url : '../../server/WS/BRIWSUserServices.php', 
-            contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+            repoId: UID,
+            async: false,
+            data : dataToSend.toJSON(),
+            url : BRIConst.URL_SERVICE, 
+            contentType : 'application/json; charset=UTF-8',
             fct_success : null,
             fct_error : null,
             fct_requestfinished : null,
         };
         this.sendRequest (ajaxParam);
-    
+
+
+        let rc = this._repository[UID].data;
+        delete this._repository[UID];
+
+        return rc;
     }
 }
 
