@@ -12,6 +12,7 @@ class BRIEnvt {
     const _DEBUGMAIL = true;
     const _DEBUGMAIL_EMAIL = 'pfs@3ds.com';
     
+    
     // Cookie de cnx
     const COOKIE_LOGGING = "BricoCookie";
 
