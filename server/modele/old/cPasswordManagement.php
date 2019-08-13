@@ -13,7 +13,7 @@
  */
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cError.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBTableUserPasswdReplaceMngt.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/DB/DBTableUserPasswdReplaceMngt.php';
 // include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cModel.php';
 
 class cPasswordManagement { // extends cModel {

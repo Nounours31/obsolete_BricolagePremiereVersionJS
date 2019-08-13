@@ -13,7 +13,7 @@
  */
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cError.php';
 include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/DBMateriel.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/DB/DBMateriel.php';
 
 class cMateriel {
     public function __construct() {

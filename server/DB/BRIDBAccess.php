@@ -11,18 +11,17 @@
  *
  * @author PFS
  */
-include_once($_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php');
-include_once($_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/iDB.php');
-abstract class iDBAccess extends iDB {
+include_once($_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/DB/iBRIDB.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php');
+include_once($_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIEnvt.php');
+class BRIDBAccess extends iBRIDB {
     
     function __construct() {
-        parent::__construct();
-        $this -> _DBName = 'InternalDBTools[DBAccess]';
-        $this -> _logger -> prefix ($this -> _DBName);
+        $this -> _DBName = '[BRIDBAccess]';
+        $this -> _logger = new BRILogger($this -> _DBName);
     }
 
     function __destruct() {
-        parent::__destruct();
     }
 
     /**
@@ -30,29 +29,29 @@ abstract class iDBAccess extends iDB {
      * @return connexion MySQL vers la DB
      */
     public function connect() {
-        $User = ENVT::DBUser;
-        $Password = ENVT::DBPassword;
-        $BaseName= ENVT::DBBaseName;
-        $Port= ENVT::DBPort;
-        if (ENVT::isLOCALSERVER) {
+        $User = BRIEnvt::DBUser;
+        $Password = BRIEnvt::DBPassword;
+        $BaseName= BRIEnvt::DBBaseName;
+        $Port= BRIEnvt::DBPort;
+        if (BRIEnvt::isLOCALSERVER) {
             $Host = "127.0.0.1";
         }
         else {
-            $Host = ENVT::DBHost;
+            $Host = BRIEnvt::DBHost;
         }
         $link = mysqli_connect($Host, $User, $Password, $BaseName,$Port);
 
         if (!$link) {
-            $this -> _logger ->DebugTrace("Error: Unable to connect to MySQL.", ENVT::_FATAL);
-            $this -> _logger ->DebugTrace("Debugging errno: " . mysqli_connect_errno(), ENVT::_FATAL);
-            $this -> _logger ->DebugTrace("Debugging error: " . mysqli_connect_error(), ENVT::_FATAL);
+            $this -> _logger -> fatal("Error: Unable to connect to MySQL.");
+            $this -> _logger ->fatal("Debugging errno: " . mysqli_connect_errno());
+            $this -> _logger ->fatal("Debugging error: " . mysqli_connect_error());
             echo "Error: Unable to connect to MySQL." . PHP_EOL;
             echo "Debugging errno: " . mysqli_connect_errno() . PHP_EOL;
             echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
             exit;
         }
         else {
-            $this -> _logger ->DebugTrace("DBAccess::Connect Connect, host information: ".mysqli_get_host_info($link), ENVT::_FATAL);
+            $this -> _logger ->fatal("DBAccess::Connect Connect, host information: ".mysqli_get_host_info($link));
         }
         return $link;
     }
@@ -86,19 +85,19 @@ abstract class iDBAccess extends iDB {
      * @return Array de array array[i] = la reponse du select pour une occurence
      */
     function select ($link, $sql) {
-        $this -> _logger ->DebugTrace("DBAccess::select SQL[".$sql."]", ENVT::_DEBUG);
+        $this -> _logger ->debug("DBAccess::select SQL[".$sql."]");
         $ret = array();
 
         $result = $link -> query ($sql);
         if ($result === FALSE) {
-            $this -> _logger ->DebugTrace("DBAccess::select error:".$link -> error, ENVT::_FATAL);
+            $this -> _logger ->fatal("DBAccess::select error:".$link -> error);
             return $ret;
         }
         if ($result === TRUE)
             return $ret;
 
         if ($result ->num_rows < 1) {
-            $this -> _logger ->DebugTrace("DBAccess::select No info in DB:", ENVT::_DEBUG);
+            $this -> _logger ->debug("DBAccess::select No info in DB:");
             return $ret;
         }
 
@@ -107,10 +106,13 @@ abstract class iDBAccess extends iDB {
             foreach ($row as $key => $value) {
                 $uneligne[$key] = $row[$key];
             }
-            $this -> _logger ->DebugTraceTableau("DBAccess::select uneligne:", $uneligne, ENVT::_DEBUG);
+            $this -> _logger -> debugtab( "DBAccess::select uneligne:", $uneligne);
             array_push($ret, $uneligne);
         }
         $result -> free();
+        
+        
+        // $this -> transfertDBRequest2DBInfoCache($ret);
         return $ret;
     }
 
@@ -125,11 +127,11 @@ abstract class iDBAccess extends iDB {
     }
     
     function insert ($link, $sql) {
-        $this -> _logger ->DebugTrace("DBAccess::insert SQL[".$sql."]", ENVT::_DEBUG);
+        $this -> _logger ->debug("DBAccess::insert SQL[".$sql."]");
 
         $result = $link -> query ($sql);
         if ($result === FALSE) {
-            $this -> _logger ->DebugTrace("DBAccess::insert error:".$link -> error, ENVT::_FATAL);
+            $this -> _logger ->fatal("DBAccess::insert error:".$link -> error);
             return FALSE;
         }
         if ($result === TRUE) {
@@ -137,7 +139,7 @@ abstract class iDBAccess extends iDB {
              * If no INSERT or UPDATE statements were sent via this connection, or
              * if the modified table does not have a column with the AUTO_INCREMENT attribute,
              * this function will return zero.*/
-            $this -> _logger ->DebugTrace("DBAccess::insert ID:".$link -> insert_id, ENVT::_DEBUG);
+            $this -> _logger ->debug("DBAccess::insert ID:".$link -> insert_id);
             $last_id = $link->insert_id;
             return $last_id;
         }
@@ -171,19 +173,46 @@ abstract class iDBAccess extends iDB {
         /* others queries */
     private function _others ($link, $sql, $updateQuery) {
         if ($updateQuery)
-            $this -> _logger ->DebugTrace("DBAccess::Upate SQL[".$sql."]", ENVT::_DEBUG);
+            $this -> _logger ->debug("DBAccess::Upate SQL[".$sql."]");
         else
-            $this -> _logger ->DebugTrace("DBAccess::Delete SQL[".$sql."]", ENVT::_DEBUG);
+            $this -> _logger ->debug("DBAccess::Delete SQL[".$sql."]");
 
         $result = $link -> query ($sql);
         if ($result === FALSE) {
             if ($updateQuery)
-                $this -> _logger ->DebugTrace("DBAccess::Update Error:".$link -> error, ENVT::_FATAL);
+                $this -> _logger ->fatal("DBAccess::Update Error:".$link -> error);
             else
-                $this -> _logger ->DebugTrace("DBAccess::Delete Error:".$link -> error, ENVT::_FATAL);
+                $this -> _logger ->fatal("DBAccess::Delete Error:".$link -> error);
             return FALSE;
         }
         return TRUE;
     }
+
+    /*
+    private function transfertDBRequest2DBInfoCache ($DBRequest) {
+        if (!is_array($DBRequest))
+            throw new Exception ("DB request invalide", 55);
+
+        if ($this->_DBTableKey == null)
+            throw new Exception ("DB no primary key defined for this table", 56);
+        
+        foreach ($DBRequest as $OneRow) {
+            $allkeyInrequete = array_keys($OneRow);
+            if (in_array($this->_DBTableKey, $allkeyInrequete)) {
+                if (!is_array($this->_DBTableInfosCache[$this->_DBTableKey]))
+                    $this->_DBTableInfosCache[$this->_DBTableKey] = array();
+                
+                foreach ($OneRow as $key => $value) {
+                    if (strcmp ($key, $this->_DBTableKey) != 0)
+                            $this->_DBTableInfosCache[$this->_DBTableKey][$key] = $value;
+                }
+            }
+            else {
+                foreach ($OneRow as $key => $value) {
+                    $this->_DBTableInfosCache[0][$key] = $value;
+                }                
+            }
+        }
+    }*/
 
 }

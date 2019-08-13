@@ -11,12 +11,9 @@
  *
  * @author PFS
  */
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cError.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/iDBAccess.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Tools.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/DB/BRIDBAccess.php';
 
-class DBTableUserPasswdReplaceMngt extends iDBAccess {
+class BRIDBTableUserPasswdReplaceMngt extends BRIDBAccess {
     
     public function __construct() {
         parent::__construct();

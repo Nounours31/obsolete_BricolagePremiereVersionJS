@@ -11,13 +11,9 @@
  *
  * @author PFS
  */
-include_once $_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/ENVT/ENVT.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/MODEL/cError.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-include_once $_SERVER['DOCUMENT_ROOT'] . 'NewPlouf/Dev/php/external/owasp-php-filters/cSanitize.php';
 
     
-class DBFileManagement {
+class BRIFileManagementWithDBLink {
     private $_logger = null;
     public function __construct() {
         $this -> _logger = new Traces('DBFileManagement');

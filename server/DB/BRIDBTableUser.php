@@ -11,16 +11,30 @@
  *
  * @author PFS
  */
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/MODEL/cError.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Traces.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/API/Tools.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'NewPlouf/Dev/php/PHPClasses/DB/iDBAccess.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/DB/BRIDBAccess.php';
+include_once($_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php');
 
-class DBTableUser extends iDBAccess {    
+class BRIDBTableUser extends BRIDBAccess {      
+    /*
+     */
+    const _DBUser_UID = "UID";                          // | UID             | int(10) unsigned                            | NO   | PRI | NULL    | auto_increment |
+    const _DBUser_Nom = "Nom"; 				// | Nom             | varchar(56)                                 | YES  |     | NULL    |                |
+    const _DBUser_Prenom = "Prenom"; 			// | Prenom          | varchar(56)                                 | YES  |     | NULL    |                |
+    const _DBUser_email = "email"; 			// | email           | varchar(60)                                 | YES  |     | NULL    |                |
+    const _DBUser_email_perso = "email_perso"; 		// | email_perso     | varchar(60)                                 | YES  |     | NULL    |                |
+    const _DBUser_PasswdMD5 = "PasswdMD5"; 		// | PasswdMD5       | varchar(56)                                 | YES  |     | NULL    |                |
+    const _DBUser_okreglement = "okreglement"; 		// | okreglement     | tinyint(4)                                  | NO   |     | 0       |                |
+    const _DBUser_UpdateReglement = "UpdateReglement"; 	// | UpdateReglement | tinyint(3) unsigned                         | YES  |     | NULL    |                |
+    const _DBUser_Matricule = "Matricule"; 		// | Matricule       | int(11)                                     | YES  |     | 0       |                |
+    const _DBUser_ce_user_status = "ce_user_status"; 	// | ce_user_status  | set('valide','ferme','bloque','temporaire') | NO   |     | valide  |                |
+    const _DBUser_UID_Entreprise = "UID_Entreprise"; 	// | UID_Entreprise  | smallint(5) unsigned                        | NO   |     | NULL    |                |
+    const _DBUser_Remarque = "Remarque"; 		// | Remarque        | text                                        | YES  |     | NULL    |                |
+    
+    
     public function __construct() {
         parent::__construct();
         $this -> _DBName = self::_DBNameUsers;
-        $this -> _logger -> prefix ($this -> _DBName);
+        $this -> _logger = new BRILogger($this -> _DBName);
     }
 
     public function __destruct() {
@@ -59,7 +73,8 @@ class DBTableUser extends iDBAccess {
             $sql = "select uid from ".self::_DBNameUsers." where (uid = '".$infos['uid']."')";
         }
         else {
-            $sql = "select uid from ".self::_DBNameUsers." where ((nom = '".$infos['nom']."') and ((email = '".$infos['email']."') or (emailperso = '".$infos['emailperso']."')))";
+            $sql = "select uid from ".self::_DBNameUsers." where ((nom = '".$infos['nom']."') and ((email = '".$infos['email']."') or "
+                    . "(".self::_DBUser_email_perso." = '".$infos[self::_DBUser_email_perso]."')))";
         }
         $rc = $this -> selectAsRest($sql);
         if (!empty($rc)) {
@@ -105,13 +120,22 @@ class DBTableUser extends iDBAccess {
     
     
     public function getEmail($uid) {
-        $sql = "select email, emailperso from ".self::_DBNameUsers." where (uid=".$uid.")";       
-        $rc = $this ->selectAsRest($sql);
-
+        $lst = array();
+        if (!is_array($uid))
+            array_push ($lst, $uid);
+        else 
+            $lst = $uid;
+        
+        
         $aRetour = array();
-        if (isset($rc) && isset($rc[0])) {
-            array_push($aRetour, $rc[0]['email']);
-            array_push($aRetour, $rc[0]['emailperso']);
+        foreach ($lst as $unUserId) {
+            $sql = "select email, ".self::_DBUser_email_perso." from ".self::_DBNameUsers." where (uid=".$unUserId.")";       
+            $rc = $this ->selectAsRest($sql);
+
+            if (isset($rc) && isset($rc[0])) {
+                if (strlen ($rc[0]['email']) > 0)      array_push($aRetour, $rc[0]['email']);
+                if (strlen ($rc[0][self::_DBUser_email_perso]) > 0) array_push($aRetour, $rc[0][self::_DBUser_email_perso]);
+            }
         }
         return $aRetour;
     }
@@ -382,8 +406,8 @@ class DBTableUser extends iDBAccess {
 
 
         public function existAUserWithThisEmail ($eMail) {
-        $sql = "SELECT u.uid as uid, u.email as eMail "
-             . "FROM  ".self::_DBNameUsers." u where (u.email = '".$eMail."')";
+        $sql = "SELECT u.uid as UID, u.email as email "
+             . "FROM  ".self::_DBNameUsers." u where ((u.email = '".$eMail."') or (u.email_perso = '".$eMail."'))";
         $rc = $this -> selectAsRest($sql);
         if (empty($rc)) {
             return false;
