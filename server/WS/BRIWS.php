@@ -1,13 +1,13 @@
 <?php
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/Envt/BRIENVT.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/modele/BRISecurite.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/modele/BRIUser.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/tools/BRILogger.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/WS/BRIWSMessageServer2Client.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/WS/BRIWSMessageClient2Server.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/WS/BRIWSApi.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/WS/BRIWSApiUser.php';
-include_once $_SERVER['DOCUMENT_ROOT'].'Bricolage2/server/WS/BRIWSApiResa.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/Envt/BRIENVT.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/modele/BRISecurite.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/modele/BRIUser.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/tools/BRILogger.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/WS/BRIWSMessageServer2Client.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/WS/BRIWSMessageClient2Server.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/WS/BRIWSApi.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/WS/BRIWSApiUser.php';
+include_once $_SERVER['DOCUMENT_ROOT'].'/Bricolage2/server/WS/BRIWSApiResa.php';
 
 
 /*********************************************************************************************

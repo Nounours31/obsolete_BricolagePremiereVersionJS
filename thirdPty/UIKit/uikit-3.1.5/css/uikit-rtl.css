@@ -1806,7 +1806,7 @@ select.uk-form-width-xsmall {
   .uk-form-horizontal .uk-form-label {
     width: 200px;
     margin-top: 7px;
-    float: right;
+    /* float: right; */
   }
   .uk-form-horizontal .uk-form-controls {
     margin-right: 215px;

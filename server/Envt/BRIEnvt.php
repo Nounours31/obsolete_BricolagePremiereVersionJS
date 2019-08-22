@@ -24,11 +24,11 @@ class BRIEnvt {
     const SMTP_User = self::SMTP_AuthenticateUser;   // mon user
 
     // access DB
-    const DBUser = "root"; 
-    const DBPassword =""; /* "4WxyJJNH";*/
+    const DBUser = "cedssectbrico"; //root; 
+    const DBPassword ="4WxyJJNH"; /* */
     const DBBaseName= "cedssectbrico";
     const DBHost = "127.0.0.1";
-    const DBPort = 3306;
+    const DBPort = 3307;
 
     
     // les path
