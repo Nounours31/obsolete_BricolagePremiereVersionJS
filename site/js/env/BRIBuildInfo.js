@@ -2,9 +2,9 @@
 
 class BRIBuildInfo {
   constructor() {
-    this._dateBuild = '2020-02-05 12:00:06';
-    this._versionBuild = 'jenkins-Bricolage-964';
-    this._commitGIT = 'ac18d2d44f1f73f381fe9d5f1f9079dc42e653bb';
+    this._dateBuild = '2020-02-05 16:00:07';
+    this._versionBuild = 'jenkins-Bricolage-965';
+    this._commitGIT = 'eadbbefa7f187adbc41856656b812025689754fe';
   }
 
   getBuildInfo () {
